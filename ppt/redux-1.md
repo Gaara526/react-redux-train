@@ -1,4 +1,4 @@
-title: Redux 介绍
+title: Redux 详解
 speaker: pengyumeng
 theme: dark
 transition: move
@@ -14,19 +14,17 @@ pengyumeng
 
 - 概述
 
-- 核心概念（Action、Reducer、Store）
+- 核心概念（action、reducer、store）
 
-- 非 React 应用场景
-
-- react-redux
+- 结合 React (react-redux）
 
 - 中间件
 
 # <font color=#0099ff>Part 2</font>
 
-- redux-sagas
+- redux-saga
 
-- redux-sages 与 redux-thunk 比较
+- redux-saga 与 redux-thunk 比较
 
 [slide]
 
@@ -34,11 +32,9 @@ pengyumeng
 
 - <font color=#ff9933>概述</font>
 
-- 核心概念（Action、Reducer、Store）
+- 核心概念（action、reducer、store）
 
-- 非 React 应用场景
-
-- react-redux
+- 结合 React (react-redux）
 
 - 中间件
 
@@ -92,9 +88,7 @@ Redux 是 Flux 的一种实现
 
 - <font color=#ff9933>核心概念（action、reducer、store）</font>
 
-- 非 react 应用场景
-
-- react-redux
+- 结合 React (react-redux）
 
 - 中间件
 
@@ -106,14 +100,14 @@ Redux 是 Flux 的一种实现
 
 [slide]
 
-# <font color=#0099ff>Action 的作用</font>
+# <font color=#0099ff>action 的作用</font>
 
 - 告诉 reducer 发生了什么事
 - 携带数据
 
 [slide]
 
-# <font color=#0099ff>典型的 Action</font>
+# <font color=#0099ff>典型的 action</font>
 
 - 必须有 type 属性，用于告知 reducer 发生了什么事
 
@@ -144,7 +138,7 @@ reducer 是个<font color=#ff9933>纯函数</font>，执行计算，返回新的
 
 [slide]
 
-# <font color=#0099ff>Reducer 的作用</font>
+# <font color=#0099ff>reducer 的作用</font>
 
 - 返回计算后的新的 state
 
@@ -167,12 +161,6 @@ reducer 是个<font color=#ff9933>纯函数</font>，执行计算，返回新的
 if (typeof state === 'undefined') {
     return initialState
 }
-  
-...
-return {
-    ...state,
-    // 更新state中的值
-};
 ```
 
 [slide]
@@ -216,18 +204,6 @@ store.getState().changeNumber.number
 
 [slide]
 
-# <font color=#0099ff>dispatch(action)</font>
-
-- 派发 action
-- 通知 reducer 去更新 state
-- 执行监听函数
-
-``` JavaScript
-store.dispatch(actions.number.incrementNum());
-```
-
-[slide]
-
 # <font color=#0099ff>subscribe(listener)</font>
 
 - 注册监听函数
@@ -254,6 +230,30 @@ const cancelUpdate = store.subscribe(update);
 
 [slide]
 
+# <font color=#0099ff>dispatch(action)</font>
+
+- 派发 action
+- 通知 reducer 去更新 state
+- 执行监听函数
+
+``` JavaScript
+store.dispatch(actions.number.incrementNum());
+```
+
+[slide]
+
+# <font color=#0099ff>初始态流转图</font>
+
+![initRedux](../img/initRedux.jpg)
+
+[slide]
+
+# <font color=#0099ff>更新态流转图</font>
+
+![doRedux](../img/doRedux.jpg)
+
+[slide]
+
 # <font color=#0099ff>简易版 createStore</font>
 
 ``` JavaScript
@@ -275,18 +275,6 @@ export const createStore = (reducer) => {
     };
 };
 ```
-
-[slide]
-
-# <font color=#0099ff>初始态流转图</font>
-
-![initRedux](../img/initRedux.jpg)
-
-[slide]
-
-# <font color=#0099ff>更新态流转图</font>
-
-![doRedux](../img/doRedux.jpg)
 
 [slide]
 
@@ -337,29 +325,29 @@ export const combineReducers = (reducers) => {
 
 - <font color=#0099ff>概述</font>
 
-- <font color=#0099ff>Action</font>
+- <font color=#0099ff>核心概念（action、reducer、store）</font>
 
-- <font color=#0099ff>Reducer</font>
+- <font color=#ff9933>结合 React (react-redux）</font>
 
-- <font color=#0099ff>Store</font>
-
-- <font color=#ff9933>结合React（用法）</font>
+- 中间件
 
 [slide]
 
-- container目录里的组件需要关心Redux
+# <font color=#0099ff>单独使用 redux</font>
 
-- component目录里的组件仅做展示用，不需要关心Redux
-
-目录结构
-
-![reactredux](../img/reactredux1.jpg)
-
-[例子 react-redux](http://0.0.0.0:9999/reactredux.html)
+[例子 reactReduxOrigin](http://0.0.0.0:9999/reduxcombinereducer.html)
 
 [slide]
 
-# <font color=#0099ff>react-redux包</font>
+# <font color=#0099ff>单独使用 redux 缺点</font>
+
+- 用到 store 中数据都需要单独绑定监听事件，繁琐
+
+- 每次 dispatch ，所有监听事件都会执行一遍，导致不必要的更新，造成资源浪费
+
+[slide]
+
+# <font color=#0099ff>react-redux</font>
 
 - ```<Provider store>```
 - connect

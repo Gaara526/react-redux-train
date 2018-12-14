@@ -47,7 +47,7 @@ export default class Number extends Component {
     render() {
         return (
             <div className="wrap">
-                <h3>origin Redux</h3>
+                <h3>origin redux with multi reducers</h3>
                 Current Number: <span className="numValue">0</span>
                 <div>
                     <Button size="large" className="numBtn" onClick={this.addNum}>+</Button>

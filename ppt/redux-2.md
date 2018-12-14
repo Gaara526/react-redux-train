@@ -1,4 +1,4 @@
-title: Redux (2)
+title: Redux-Saga
 speaker: JackZhang
 theme: dark
 transition: move
