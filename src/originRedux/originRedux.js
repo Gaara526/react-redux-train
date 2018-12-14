@@ -11,13 +11,11 @@ import 'antd/dist/antd.css';
 // import { createStore } from './lib/common';
 import './originRedux.pcss';
 
-const reducer = (state, action) => {
-    if (typeof state === 'undefined') {
-        return {
-            number: 0,
-        };
-    }
+const initialState = {
+    number: 0,
+};
 
+const reducer = (state = initialState, action) => {
     switch (action.type) {
         case 'INCREMENT':
             return {
