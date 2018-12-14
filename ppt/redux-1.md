@@ -167,7 +167,7 @@ if (typeof state === 'undefined') {
 
 # <font color=#0099ff>什么是 store ？</font>
 
-由 createStore 创建，提供 getState，dispatch，subscribe 方法，内部存储数据 state 的仓库
+由 createStore 创建，提供 getState，subscribe，dispatch 方法，内部存储数据 state 的仓库
 
 [slide]
 
