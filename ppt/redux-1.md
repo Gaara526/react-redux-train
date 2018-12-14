@@ -341,7 +341,7 @@ export const combineReducers = (reducers) => {
 
 # <font color=#0099ff>单独使用 redux 缺点</font>
 
-- 用到 store 中数据都需要单独绑定监听事件，繁琐
+- 使用 store 中数据都需要单独绑定监听事件，繁琐，不利于工程化项目
 
 - 每次 dispatch ，所有监听事件都会执行一遍，导致不必要的更新，造成资源浪费
 
