@@ -171,7 +171,7 @@ if (typeof state === 'undefined') {
 
 [slide]
 
-# <font color=#0099ff>创建 Store</font>
+# <font color=#0099ff>创建 store</font>
 
 ``` JavaScript
 createStore(reducer, [initialState], [enhancer]);
@@ -335,20 +335,31 @@ export const combineReducers = (reducers) => {
 
 # <font color=#0099ff>单独使用 redux</font>
 
+```JavaScript 
+componentDidMount() {
+    store.subscribe(() => {
+        const newState = store.getState();
+        this.setState({
+            number: newState.changeNumber.number,
+            showAlert: newState.toggleAlert.showAlert,
+        });
+    });
+}
+```
+
 [例子 reactReduxOrigin](http://0.0.0.0:9999/reduxcombinereducer.html)
 
 [slide]
 
 # <font color=#0099ff>单独使用 redux 缺点</font>
 
-- 使用 store 中数据都需要单独绑定监听事件，繁琐，不利于工程化项目
-
-- 每次 dispatch ，所有监听事件都会执行一遍，导致不必要的更新，造成资源浪费
+- 使用 store 中数据都需要单独绑定监听事件，代码重复
 
 [slide]
 
 # <font color=#0099ff>react-redux</font>
 
+- react-redux 一共就一个组件和一个 API：
 - ```<Provider store>```
 - connect
 
@@ -356,10 +367,10 @@ export const combineReducers = (reducers) => {
 
 # <font color=#0099ff>```<Provider store>```</font>
 
-- 将入口组件包进去（被包进的组件及子组件才能访问到Store，才能使用connect方法）
+- 将入口组件包进去（被包进的组件及子组件才能访问到 store ，才能使用 connect 方法）
 
 ``` JavaScript
-import { Provider } from 'react-redux';     // 引入 react-redux
+import { Provider } from 'react-redux';  // 引入 react-redux
 
 ……
 render(
@@ -379,23 +390,13 @@ connect([mapStateToProps], [mapDispatchToProps], [mergeProps], [options])
 ```
 
 ``` JavaScript
-const mapStateToProps = (state) => {
-    return {
-        number: state.changeNumber.number,
-        showAlert: state.toggleAlert.showAlert,
-    };
-};
-
-const mapDispatchToProps = {
-    incrementNum: action.number.incrementNum,
-    decrementNum: action.number.decrementNum,
-    clearNum: action.number.clearNum,
-    toggleAlert: action.alert.toggleAlert,
-};
+const mapStateToProps = (state) => ({
+    number: state.changeNumber.number,
+    showAlert: state.toggleAlert.showAlert,
+});
 
 export default connect(
     mapStateToProps,
-    mapDispatchToProps,
 )(Sample);
 ```
 
@@ -403,133 +404,224 @@ export default connect(
 
 # <font color=#0099ff>mapStateToProps</font>
 
-- connect方法的第一个参数mapStateToProps是一个function（负责输入）
-- 作用是将Store里的state变成组件的props。当state更新时，会同步更新组件的props，触发组件的render方法
-- function返回值是一个key-value的plain object
+- 作用是将 store 里的 state 变成组件的 props 。当 state 更新时，会同步更新组件的 props ，触发组件的 render 方法
+- function 返回值是一个 key-value 的 plain object
 
 ``` JavaScript
-const mapStateToProps = (state) => {
-    return {
-        number: state.changeNumber.number,
-        showAlert: state.toggleAlert.showAlert,
+const mapStateToProps = (state) => ({
+    number: state.changeNumber.number,
+    showAlert: state.toggleAlert.showAlert,
+});
+```
+- 如果 mapStateToProps 为空（即设成()=>({})），那 store 里的任何更新就不会触发组件的 render 方法。
+
+[slide]
+
+# <font color=#0099ff>react-redux 的实现原理</font>
+
+- react 里有个全局变量 context ，可用将组件间共享的数据放到 context 里
+
+- 优点是：所有组件都可以随时访问到 context 里共享的值，免去了数据层层传递的麻烦
+
+- 缺点是：全局变量意味着所有人都可以随意修改它，导致不可控。而且和 react 组件化设计思想不符合
+
+[slide]
+
+# <font color=#0099ff>context 能和 react-redux 完美结合</font>
+
+- redux 设计思想就是单一数据源，集中维护 state。（context 天生就是唯一数据源）
+
+- redux 设计思想就是不允许随意修改 state，这样数据存到 context 里，也无法随意修改数据
+
+- context 成了一个可控的唯一的全局变量，完美！
+
+[slide]
+
+# <font color=#0099ff> Provider 组件的实现原理</font>
+
+- 将 store 保存进 context ，让子组件可以访问到 context 里的 store
+
+``` JavaScript
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+
+export default class Provider extends Component {
+    static childContextTypes = {
+        store: PropTypes.object,
     };
-};
-```
-- 如果mapStateToProps为空（即设成()=>({})），那Store里的任何更新就不会触发组件的render方法。
 
-[slide]
-
-# <font color=#0099ff>mapDispatchToProps</font>
-
-- connect方法的第二个参数mapDispatchToProps可以是一个object也可以是一个function（负责输出）
-- 作用是将```dispatch(action)```绑定到组件的props上，这样组件就能派发Action，更新state了
-
-[slide]
-
-# <font color=#0099ff>object型mapDispatchToProps</font>
-
-- 是一个key-value的plain object
-- key是组件props
-- value是一个Action creator
-
-``` JavaScript
-const mapDispatchToProps = {
-    incrementNum: action.number.incrementNum,
-    decrementNum: action.number.decrementNum,
-    clearNum: action.number.clearNum,
-    toggleAlert: action.alert.toggleAlert,
-};
-```
-- 这样就能在组件中通过```this.props.incrementNum()```方式来dispatch Action出去
-- 但为何不是```dispatch(this.props.incrementNum())```？？
-
-[slide]
-
-# <font color=#0099ff>function型mapDispatchToProps</font>
-
-- 是一个function
-- 参数是dispatch方法
-- 返回值是object型mapDispatchToProps
-
-``` JavaScript
-import { bindActionCreators } from 'redux';
-
-const mapDispatchToProps2 = (dispatch, ownProps) => {
-    return {
-        incrementNum: bindActionCreators(action.number.incrementNum, dispatch),
-        decrementNum: bindActionCreators(action.number.decrementNum, dispatch),
-        clearNum: bindActionCreators(action.number.clearNum, dispatch),
-        toggleAlert: bindActionCreators(action.alert.toggleAlert, dispatch),
+    getChildContext = () => {
+        return { store: this.props.store, };
     };
-};
+
+    render() {
+        return (<div>{this.props.children}</div>);
+    }
+}
 ```
-- 解释了上一页的疑问。其实dispatch已经被封装进去了，因此你不必手动写dispatch了
 
 [slide]
 
-# <font color=#0099ff>mergeProps</font>
+# <font color=#0099ff>connect 高阶组件目的</font>
 
-- 经过conncet的组件的props有3个来源：
-- 1.由mapStateToProps将state映射成的props
-- 2.由mapDispatchToProps将```dispatch(action)```映射成的props
-- 3.组件自身的props。
-
-mergeProps的参数分别对应了上面3个来源，作用是整合这些props
-
-（例如过滤掉不需要的props，重新组织props，根据ownProps绑定不同的stateProps和dispatchProps等）
-
-[slide]
-
-例如过滤掉不需要的props：
+- 被```<Provider store>```包裹的子组件能访问到 context 里的 store
 
 ``` JavaScript
-const mergeProps = (stateProps, dispatchProps, ownProps) => {
-    return {
-        ...ownProps,
-        ...stateProps,
-        incrementNum: dispatchProps.incrementNum,	// 只输出incrementNum
-    };
-};
-
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps,
-    mergeProps,
-)(Sample);
+export class myComponent extends Component {
+    ...
+    static contextTypes = {
+        store: PropTypes.object
+    }
+    ...
+}
 ```
+
+- 但这样每个组件里都要写上述代码太麻烦了，用 HOC 高阶组件来消除重复代码
 
 [slide]
 
-例如重新组织props：
+# <font color=#0099ff>connect 高阶组件示意图</font>
+
+<div margin="auto">
+    <img src="../img/reactredux2.jpg" width="750px" height="435px" />
+</div>
+
+[slide]
+
+# <font color=#0099ff>connect 高阶组件实现（一）</font>
+
+- 第一步：内部封装掉了每个组件都要写的访问 context 的代码，dispatch 就是在这个地方被传入组件 props
 
 ``` JavaScript
-const mergeProps = (stateProps, dispatchProps, ownProps) => {
-    return {
-        ...ownProps,
-        state: stateProps,
-        actions: {
-            ...dispatchProps,
-            ...ownProps.actions,
-        },
-    };
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+
+const connect = (WrappedComponent) => {
+    class Connect extends Component {
+        static contextTypes = {
+            store: PropTypes.object,
+        };
+
+        render() {
+            const { store } = this.context;
+            const disptch = store.dispatch;
+            const stateProps = store.getState();
+            cosnt finalProps = {
+                dispatch,
+                ...stateProps,
+            }
+            return (<WrappedComponent {...finalProps} />);
+        }
+    }
+
+    return Connect;
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps,
-    mergeProps,
-)(Sample);
+export default connect;
 ```
 
 [slide]
 
-# <font color=#0099ff>总结</font>
+# <font color=#0099ff>connect 高阶组件实现（二）</font>
 
-- react-redux一共就一个组件和一个API：
+- 第二步：参数 mapStateToProps 封装掉组件从 context 中取 store 的代码
 
-- ```<Provider store>```用于包裹React组件，被包裹的组件可以使用connect方法。
+``` JavaScript
+const connect = (mapStateToProps) => (WrappedComponent) => {
+    class Connect extends Component {
+        static contextTypes = {
+            store: PropTypes.object,
+        };
+        
+        render() {
+            const { store } = this.context;
+            const disptch = store.dispatch;
+            const stateProps = mapStateToProps(store.getState());
+            cosnt finalProps = {
+                dispatch,
+                ...stateProps,
+            }
+            return (<WrappedComponent {...finalProps} />);
+        }
+    }
 
-- conncet方法用于将组件绑定Redux。第一个参数负责输入，将state映射成组件props。第二个参数负责输出，将```dispatch(action)```映射成组件props。第三个参数用于整合props。第四个参数可以做一些优化，具体见官网。
+    return Connect;
+};
+```
+
+[slide]
+
+# <font color=#0099ff>connect 高阶组件实现（三）</font>
+
+- 第三步：封装掉 subscribe ，当 store 变化，刷新组件的 props ，触发组件的 render 方法
+
+``` JavaScript
+export const connect = (mapStateToProps) => (WrappedComponent) => {
+    class Connect extends Component {
+        static contextTypes = {
+            store: PropTypes.object,
+        };
+                
+        this.state = { finalProps: {} };
+        
+        componentDidMount() {
+            this.updateProps();
+            this.context.store.subscribe(this.updateProps);
+        }
+        
+        updateProps = () => {
+            const { store } = this.context;
+            const disptch = store.dispatch;
+            const stateProps = mapStateToProps(store.getState());
+        
+            const finalProps = {
+                disptch,
+                ...stateProps,
+                ...this.props,
+            };
+        
+            this.setState({
+                finalProps,
+            });
+        };
+        
+        render() {
+            const { finalProps } = this.state;
+            return (<WrappedComponent {...finalProps} />);
+        }
+    }
+    
+    return Connect;
+}
+```
+
+[slide]
+
+[例子 reactRedux](http://0.0.0.0:9999/reactredux.html)
+
+[slide]
+
+# <font color=#0099ff>react-redux 总结</font>
+
+- react-redux 一共就一个组件和一个 API：
+
+- ```<Provider store>```用于在入口处包裹需要用到 redux 的组件。<font color=#ff9933>本质上是将 store 放入 context 里</font>
+
+- connect 方法用于将组件绑定 redux。<font color=#ff9933>本质上是 HOC ，封装掉了每个组件都要写的板式代码，增加了功能。</font>
+
+- <font color=#ff9933>react-redux 的高封装性让开发者感知不到 context 的存在，甚至感知不到 store 的 getState，subscribe 和 dispatch 的存在。只要 connect 一下，数据一变就自动刷新 react 组件，非常方便。</font>
+
+[slide]
+
+# <font color=#0099ff>Part 1</font>
+
+- <font color=#0099ff>概述</font>
+
+- <font color=#0099ff>核心概念（action、reducer、store）</font>
+
+- <font color=#0099ff>结合 React (react-redux）</font>
+
+- <font color=#ff9933>中间件</font>
 
 [slide]
 

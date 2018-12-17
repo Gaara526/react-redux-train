@@ -4,7 +4,7 @@
  */
 
 import { combineReducers } from 'redux';
-// import { combineReducers } from '../lib/common';
+// import { combineReducers } from '../lib/redux';
 import changeNumber from './number';
 import toggleAlert from './alert';
 

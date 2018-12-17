@@ -7,7 +7,7 @@ import React, { Component } from 'react';
 import { Alert, Button } from 'antd';
 import 'antd/dist/antd.css';
 
-import { createStore } from './lib/common';
+import { createStore } from './lib/redux';
 import reducer from './reducer';
 import './originRedux.pcss';
 

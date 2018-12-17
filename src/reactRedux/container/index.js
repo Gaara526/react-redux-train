@@ -6,56 +6,43 @@
 import React, { Component } from 'react';
 import 'antd/dist/antd.css';
 
-import { createStore } from '../lib/redux';
-import reducer from '../reducer';
+import { connect } from '../lib/react-redux';
 import './index.pcss';
 
 import NumberComponent from '../components/Number';
 import AlertComponent from '../components/Alert';
 
-const store = createStore(reducer);
+const mapStateToProps = (state) => ({
+    number: state.changeNumber.number,
+    showAlert: state.toggleAlert.showAlert,
+});
 
-export default class Number extends Component {
-    state = {
-        number: 0,
-        showAlert: false,
-    };
-
-    componentDidMount() {
-        store.subscribe(() => {
-            const newState = store.getState();
-            this.setState({
-                number: newState.changeNumber.number,
-                showAlert: newState.toggleAlert.showAlert,
-            });
-        });
-    }
-
+class Number extends Component {
     handleClickAdd = () => {
-        store.dispatch({ type: 'INCREMENT' });
+        this.props.dispatch({ type: 'INCREMENT' });
     };
 
     handleClickMinus = () => {
-        store.dispatch({ type: 'DECREMENT' });
+        this.props.dispatch({ type: 'DECREMENT' });
     };
 
     handleClickClear = () => {
-        store.dispatch({ type: 'CLEAR_NUM' });
+        this.props.dispatch({ type: 'CLEAR_NUM' });
     };
 
     handleClickAlert = () => {
-        store.dispatch({ type: 'TOGGLE_ALERT' });
+        this.props.dispatch({ type: 'TOGGLE_ALERT' });
     };
 
     render() {
         const {
             number,
             showAlert,
-        } = this.state;
+        } = this.props;
 
         return (
             <div className="wrap">
-                <h3>react redux without react-redux package</h3>
+                <h3>react redux</h3>
                 <NumberComponent
                     value={number}
                     handleClickAdd={this.handleClickAdd}
@@ -70,3 +57,7 @@ export default class Number extends Component {
         );
     }
 }
+
+export default connect(
+    mapStateToProps,
+)(Number);
