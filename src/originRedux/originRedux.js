@@ -4,11 +4,10 @@
  */
 
 import React, { Component } from 'react';
-import { createStore } from 'redux';
 import { Button } from 'antd';
 import 'antd/dist/antd.css';
 
-// import { createStore } from './lib/redux';
+import { createStore } from './lib/redux';
 import './originRedux.pcss';
 
 const initialState = {

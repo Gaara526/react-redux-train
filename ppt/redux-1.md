@@ -278,7 +278,7 @@ export const createStore = (reducer) => {
 
 [slide]
 
-[例子 originRedux](http://0.0.0.0:9999/redux.html)
+[例子 原始 redux](http://0.0.0.0:9999/redux.html)
 
 [slide]
 
@@ -317,7 +317,7 @@ export const combineReducers = (reducers) => {
 
 [slide]
 
-[例子 originReduxCombineReducer](http://0.0.0.0:9999/reduxcombinereducer.html)
+[例子 combineReducer](http://0.0.0.0:9999/reduxcombinereducer.html)
 
 [slide]
 
@@ -347,7 +347,7 @@ componentDidMount() {
 }
 ```
 
-[例子 reactReduxOrigin](http://0.0.0.0:9999/reduxcombinereducer.html)
+[例子 react 中使用 redux](http://0.0.0.0:9999/reduxcombinereducer.html)
 
 [slide]
 
@@ -597,7 +597,7 @@ export const connect = (mapStateToProps) => (WrappedComponent) => {
 
 [slide]
 
-[例子 reactRedux](http://0.0.0.0:9999/reactredux.html)
+[例子 react-redux](http://0.0.0.0:9999/reactredux.html)
 
 [slide]
 
@@ -622,6 +622,158 @@ export const connect = (mapStateToProps) => (WrappedComponent) => {
 - <font color=#0099ff>结合 React (react-redux）</font>
 
 - <font color=#ff9933>中间件</font>
+
+[slide]
+
+# <font color=#0099ff>中间件的作用</font>
+
+- 在流程中插入功能
+
+- 要满足两个特性：一是扩展功能，二是可以被链式调用。
+
+[slide]
+
+# <font color=#0099ff>例子</font>
+
+- redux-logger 中间件
+
+![redux-logger](../img/redux-logger.jpeg)
+
+[slide]
+
+# <font color=#0099ff>需求：打印 log</font>
+
+- 需求：自动打印出 action 对象和更新前后的 state，便于调试和追踪数据变化流
+
+``` JavaScript
+console.log('current state: ', store.getState());
+console.log('dispatching', action);
+store.dispatch(action);
+console.log('next state', store.getState());
+```
+
+- 我们需要封装打印 log 的代码，否则让程序员在每个 dispatch 的地方写 log 是不可接受的
+
+[slide]
+
+# <font color=#0099ff>打印 log 的中间件</font>
+
+``` JavaScript
+const preDispatch = store.dispatch;
+
+store.dispatch = (action) => {
+    console.log('current state: ', store.getState());
+    console.log('action: ', action);
+    preDispatch(action);
+    console.log('next state: ', store.getState());
+};
+```
+
+- 上述就是增强版 store.dispatch ，这就是 redux 的中间件
+
+[slide]
+
+# <font color=#0099ff>log 中间件为何只能封装到 dispatch 里？</font>
+
+- ~~Action~~ （HOW？plain object）
+- ~~Reducer~~ （OK...But not pure）
+- dispatch
+- <font color=#ff9933>redux 的中间件本质上就是增强 dispatch</font>
+
+[slide]
+
+# <font color=#0099ff>添加中间件 API : applyMiddleware</font>
+
+- 前面的例子里中间件已经实现了链式调用，但用起来不够优雅
+
+- redux 提供 applyMiddleware 方法，允许将所有中间件作为参数传递进去，我们来自己实现这个方法
+
+``` JavaScript
+const applyMiddlewarePlus = (...middlewares) => (createStore) => (reducer) => {
+    const store = createStore(reducer);
+
+    let dispatch = store.dispatch;
+    middlewares.forEach((middleware) => {
+        dispatch = middleware(store)(dispatch);
+    });
+
+    return {
+        ...store,
+        dispatch,
+    };
+};
+```
+
+[slide]
+
+# <font color=#0099ff>creatStore 方法改进 </font>
+
+- creatStore 方法需新增加一个参数 enhancer 
+
+``` JavaScript
+const createStore = (reducer, enhancer) => {
+    if (typeof enhancer !== 'undefined') {
+        if (typeof enhancer !== 'function') {
+            throw new Error('Expected the enhancer to be a function.');
+        }
+        // 将 enhancer 包装一次 createStore 方法，再调用无 enhancer 的 createStore 方法
+        return enhancer(createStore)(reducer);
+    }
+    
+    ...
+}
+```
+
+[slide]
+
+# <font color=#0099ff>实现多个中间件</font>
+
+- 例如将之前打印 logger 的中间件拆成两个
+
+``` JavaScript
+// 只打印出 action
+const loggerAction = (store) => {
+    return (dispatch) => {
+        return (action) => {
+            console.log('action: ', action);
+            dispatch(action);
+        };
+    };
+};
+
+// 只打印出更新前后的 state
+const loggerState = (store) => {
+    return (dispatch) => {
+        return (action) => {
+            console.log('current state: ', store.getState());
+            dispatch(action);
+            console.log('next state', store.getState());
+        };
+    };
+};
+```
+
+[slide]
+
+# <font color=#0099ff>多个中间件就像洋葱圈</font>
+
+![reduxmiddleware](../img/reduxmiddleware2.jpg)
+
+[slide]
+
+# <font color=#0099ff>compose</font>
+
+- compose 允许你进一步增强 redux 
+
+``` JavaScript
+const compose = (...funcs) => {
+    return funcs.reduce((a, b) => (...args) => a(b(...args)));
+};
+```
+
+[slide]
+
+[例子 中间件](http://0.0.0.0:9999/reactreduxmiddleware.html)
 
 [slide]
 

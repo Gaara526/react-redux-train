@@ -7,21 +7,20 @@ import React, { Component } from 'react';
 import { render } from 'react-dom';
 import { AppContainer } from 'react-hot-loader';
 
-import { createStore } from '../lib/redux';
+import { applyMiddleware, compose, createStore } from '../lib/redux';
 import { Provider } from '../lib/react-redux';
+import { loggerAction, loggerState } from '../lib/middlewares';
 import reducer from '../reducer';
 import Demo from '../container';
 
-const store = createStore(reducer);
+const middlewares = [
+    loggerAction,
+    loggerState,
+];
 
-// const preDispatch = store.dispatch;
-//
-// store.dispatch = (action) => {
-//     console.log('current state: ', store.getState());
-//     console.log('action: ', action);
-//     preDispatch(action);
-//     console.log('next state: ', store.getState());
-// };
+const store = createStore(reducer, compose(
+    applyMiddleware(...middlewares),
+));
 
 render(
     <AppContainer>

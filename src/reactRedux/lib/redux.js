@@ -3,7 +3,7 @@
  * @author pengyumeng
  */
 
-export const createStore = (reducer) => {
+const createStore = (reducer) => {
     let state;
     const listeners = [];
     const getState = () => state;
@@ -21,7 +21,7 @@ export const createStore = (reducer) => {
     };
 };
 
-export const combineReducers = (reducers) => {
+const combineReducers = (reducers) => {
     const reducerKeys = Object.keys(reducers);
     return (state = {}, action) => {
         const nextState = {};
@@ -35,4 +35,9 @@ export const combineReducers = (reducers) => {
             ...nextState,
         };
     };
+};
+
+export {
+    combineReducers,
+    createStore,
 };

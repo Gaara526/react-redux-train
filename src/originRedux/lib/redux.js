@@ -3,7 +3,7 @@
  * @author pengyumeng
  */
 
-export const createStore = (reducer) => {
+const createStore = (reducer) => {
     let state;
     const listeners = [];
     const getState = () => state;
@@ -19,4 +19,8 @@ export const createStore = (reducer) => {
         dispatch,
         subscribe,
     };
+};
+
+export {
+    createStore,
 };
