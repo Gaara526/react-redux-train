@@ -1,11 +1,11 @@
-title: Redux 详解
+title: redux 详解
 speaker: pengyumeng
 theme: dark
 transition: move
 
 [slide]
 
-# Redux 详解
+# Redux
 pengyumeng
 
 [slide]
@@ -22,9 +22,9 @@ pengyumeng
 
 # <font color=#0099ff>Part 2</font>
 
-- redux-saga
+- redux-thunk
 
-- redux-saga 与 redux-thunk 比较
+- redux-saga
 
 [slide]
 
