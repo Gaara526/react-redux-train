@@ -110,6 +110,10 @@ this.props.dispatch(asyncFetch);
 
 [slide]
 
+[例子 redux-saga 异步中间件](http://0.0.0.0:9999/reactreduxsaga.html)
+
+[slide]
+
 # THE END
 
 ### THANK YOU
