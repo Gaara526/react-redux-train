@@ -732,24 +732,16 @@ const createStore = (reducer, enhancer) => {
 
 ``` JavaScript
 // 只打印出 action
-const loggerAction = (store) => {
-    return (dispatch) => {
-        return (action) => {
-            console.log('action: ', action);
-            dispatch(action);
-        };
-    };
+const loggerAction = (store) => (dispatch) => (action) => {
+    console.log('action: ', action);
+    dispatch(action);
 };
 
 // 只打印出更新前后的 state
-const loggerState = (store) => {
-    return (dispatch) => {
-        return (action) => {
-            console.log('current state: ', store.getState());
-            dispatch(action);
-            console.log('next state', store.getState());
-        };
-    };
+const loggerState = (store) => (dispatch) => (action) => {
+    console.log('current state: ', store.getState());
+    dispatch(action);
+    console.log('next state', store.getState());
 };
 ```
 

@@ -29,7 +29,7 @@ export default class AlertComponent extends Component {
 
         return (
             <div>
-                <Button size="large" className="numBtn" onClick={handleClickAlert}>Alert</Button>
+                <Button size="large" className="numBtn" onClick={handleClickAlert}>alert</Button>
                 {showAlert && <Alert message="Hello Redux" type="success" />}
             </div>
         );

@@ -55,7 +55,7 @@ export default class Number extends Component {
                     <Button size="large" className="numBtn" onClick={this.clearNum}>clear</Button>
                 </div>
                 <div>
-                    <Button size="large" className="numBtn" onClick={this.toggleAlert}>Alert</Button>
+                    <Button size="large" className="numBtn" onClick={this.toggleAlert}>alert</Button>
                     <Alert className="alert" message="Hello Redux" type="success" style={{ display: 'none' }} />
                 </div>
             </div>

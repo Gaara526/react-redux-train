@@ -31,3 +31,21 @@ http://0.0.0.0:9999/reduxcombinereducer.html
 react use redux without react-redux
  
 http://0.0.0.0:9999/reactreduxorigin.html
+
+### Chapter 4 reactRedux
+
+react-redux
+ 
+http://0.0.0.0:9999/reactredux.html
+
+### Chapter 5 reactReduxMiddleware
+
+redux middleware
+ 
+http://0.0.0.0:9999/reactreduxmiddleware.html
+
+### Chapter 5 reactReduxThunk
+
+use redux-thunk to async fetch
+ 
+http://0.0.0.0:9999/reactreduxthunk.html
