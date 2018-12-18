@@ -3,23 +3,23 @@
  * @author pengyumeng
  */
 
-import React, { Component } from 'react';
+import React from 'react';
 import { render } from 'react-dom';
 import { AppContainer } from 'react-hot-loader';
 
 import { applyMiddleware, compose, createStore } from '../lib/redux';
 import { Provider } from '../lib/react-redux';
-import { loggerAction, loggerState } from '../lib/middlewares';
+import { loggerAction, loggerState } from '../lib/middleware';
 import reducer from '../reducer';
 import Demo from '../container';
 
-const middlewares = [
+const middleware = [
     loggerAction,
     loggerState,
 ];
 
 const store = createStore(reducer, compose(
-    applyMiddleware(...middlewares),
+    applyMiddleware(...middleware),
 ));
 
 render(

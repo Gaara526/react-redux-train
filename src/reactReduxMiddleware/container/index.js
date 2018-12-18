@@ -9,15 +9,15 @@ import 'antd/dist/antd.css';
 import { connect } from '../lib/react-redux';
 import './index.pcss';
 
-import NumberComponent from '../components/Number';
-import AlertComponent from '../components/Alert';
+import Number from '../components/Number';
+import Alert from '../components/Alert';
 
 const mapStateToProps = (state) => ({
     number: state.changeNumber.number,
     showAlert: state.toggleAlert.showAlert,
 });
 
-class Number extends Component {
+class Demo extends Component {
     handleClickAdd = () => {
         this.props.dispatch({ type: 'INCREMENT' });
     };
@@ -42,14 +42,14 @@ class Number extends Component {
 
         return (
             <div className="wrap">
-                <h3>react redux with middlewares</h3>
-                <NumberComponent
+                <h3>redux middleware</h3>
+                <Number
                     value={number}
                     handleClickAdd={this.handleClickAdd}
                     handleClickMinus={this.handleClickMinus}
                     handleClickClear={this.handleClickClear}
                 />
-                <AlertComponent
+                <Alert
                     showAlert={showAlert}
                     handleClickAlert={this.handleClickAlert}
                 />
@@ -60,4 +60,4 @@ class Number extends Component {
 
 export default connect(
     mapStateToProps,
-)(Number);
+)(Demo);

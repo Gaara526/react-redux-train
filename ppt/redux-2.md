@@ -84,7 +84,6 @@ const asyncFetch = async(dispatch, getState) => {
     fetch('./api/asyncFetchData.json')
         .then((response) => response.json())
         .then((json) => {
-
             // 第三步，请求发送成功回调，此时更新数据并关闭 loading 状态
             dispatch({
                 type: 'RECEIVE_DATA',

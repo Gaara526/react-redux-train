@@ -4,15 +4,15 @@
  */
 
 import React, { Component } from 'react';
-import 'antd/dist/antd.css';
 import fetch from 'isomorphic-fetch';
+import 'antd/dist/antd.css';
 
 import { connect } from '../lib/react-redux';
 import './index.pcss';
 
-import NumberComponent from '../components/Number';
-import AlertComponent from '../components/Alert';
-import AsyncComponent from '../components/Async';
+import Number from '../components/Number';
+import Alert from '../components/Alert';
+import Async from '../components/Async';
 
 const sleep = (timeout) => {
     return new Promise((resolve) => {
@@ -27,7 +27,7 @@ const mapStateToProps = (state) => ({
     data: state.asyncFetch.data,
 });
 
-class Number extends Component {
+class Demo extends Component {
     handleClickAdd = () => {
         this.props.dispatch({ type: 'INCREMENT' });
     };
@@ -50,16 +50,15 @@ class Number extends Component {
         }
 
         const asyncFetch = async(dispatch, getState) => {
-            // 请求开始
+            // 第一步，请求开始阶段，可以给视图添加 loading 状态
             dispatch({ type: 'REQUEST_DATA' });
 
+            // 第二步，发送请求
             await sleep(1000);
-
             fetch('./api/asyncFetchData.json')
                 .then((response) => response.json())
                 .then((json) => {
-
-                    // 请求开始
+                    // 第三步，请求发送成功回调，此时更新数据并关闭 loading 状态
                     dispatch({
                         type: 'RECEIVE_DATA',
                         payload: json.msg,
@@ -80,18 +79,18 @@ class Number extends Component {
 
         return (
             <div className="wrap">
-                <h3>react redux with redux-thunk</h3>
-                <NumberComponent
+                <h3>use redux-thunk to async fetch</h3>
+                <Number
                     value={number}
                     handleClickAdd={this.handleClickAdd}
                     handleClickMinus={this.handleClickMinus}
                     handleClickClear={this.handleClickClear}
                 />
-                <AlertComponent
+                <Alert
                     showAlert={showAlert}
                     handleClickAlert={this.handleClickAlert}
                 />
-                <AsyncComponent
+                <Async
                     showLoading={fetching}
                     handleClickFetch={this.handleClickFetch}
                     data={data}
@@ -103,4 +102,4 @@ class Number extends Component {
 
 export default connect(
     mapStateToProps,
-)(Number);
+)(Demo);

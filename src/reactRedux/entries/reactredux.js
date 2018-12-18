@@ -3,7 +3,7 @@
  * @author pengyumeng
  */
 
-import React, { Component } from 'react';
+import React from 'react';
 import { render } from 'react-dom';
 import { AppContainer } from 'react-hot-loader';
 

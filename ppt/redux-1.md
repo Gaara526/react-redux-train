@@ -670,6 +670,7 @@ store.dispatch = (action) => {
 ```
 
 - 上述就是增强版 store.dispatch ，这就是 redux 的中间件
+[例子 log 中间件初步实现](http://0.0.0.0:9999/reactredux.html)
 
 [slide]
 

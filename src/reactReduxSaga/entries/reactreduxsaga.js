@@ -6,11 +6,19 @@
 import React from 'react';
 import { render } from 'react-dom';
 import { AppContainer } from 'react-hot-loader';
+import { applyMiddleware, compose, createStore } from 'redux';
+import { Provider } from 'react-redux';
+
+import reducer from '../reducer';
 import Demo from '../container';
+
+const store = createStore(reducer);
 
 render(
     <AppContainer>
-        <Demo />
+        <Provider store={store}>
+            <Demo />
+        </Provider>
     </AppContainer>,
     document.getElementById('app'),
 );
@@ -20,7 +28,9 @@ if (module.hot) {
         const newDemo = require('../container').default;
         render(
             <AppContainer>
-                {React.createElement(newDemo)}
+                <Provider store={store}>
+                    {React.createElement(newDemo)}
+                </Provider>
             </AppContainer>,
             document.getElementById('app'),
         );

@@ -16,7 +16,7 @@ yarn run dev
 
 ### Chapter 1 originRedux
 
-all redux in single JS file
+all redux in single js file
  
 http://0.0.0.0:9999/redux.html
 
@@ -44,8 +44,14 @@ redux middleware
  
 http://0.0.0.0:9999/reactreduxmiddleware.html
 
-### Chapter 5 reactReduxThunk
+### Chapter 6 reactReduxThunk
 
 use redux-thunk to async fetch
  
 http://0.0.0.0:9999/reactreduxthunk.html
+
+### Chapter 7 reactReduxSaga
+
+use redux-saga to async fetch
+ 
+http://0.0.0.0:9999/reactreduxsaga.html

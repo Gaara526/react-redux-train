@@ -59,8 +59,8 @@ const applyMiddleware = (...middleware) => (innerCreateStore) => (reducer) => {
     };
 };
 
-const compose = (...functions) => {
-    return functions.reduce((a, b) => (...args) => a(b(...args)));
+const compose = (...funcs) => {
+    return funcs.reduce((a, b) => (...args) => a(b(...args)));
 };
 
 export {

@@ -45,12 +45,12 @@ const combineReducers = (reducers) => {
     };
 };
 
-const applyMiddleware = (...middlewares) => (innerCreateStore) => (reducer) => {
+const applyMiddleware = (...middleware) => (innerCreateStore) => (reducer) => {
     const store = innerCreateStore(reducer);
 
     let dispatch = store.dispatch;
-    middlewares.forEach((middleware) => {
-        dispatch = middleware(store)(dispatch);
+    middleware.forEach((middlewareItem) => {
+        dispatch = middlewareItem(store)(dispatch);
     });
 
     return {
@@ -59,8 +59,8 @@ const applyMiddleware = (...middlewares) => (innerCreateStore) => (reducer) => {
     };
 };
 
-const compose = (...funcs) => {
-    return funcs.reduce((a, b) => (...args) => a(b(...args)));
+const compose = (...functions) => {
+    return functions.reduce((a, b) => (...args) => a(b(...args)));
 };
 
 export {

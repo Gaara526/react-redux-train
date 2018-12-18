@@ -4,58 +4,47 @@
  */
 
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import 'antd/dist/antd.css';
 
-import { createStore } from '../lib/redux';
-import reducer from '../reducer';
 import './index.pcss';
 
 import Number from '../components/Number';
 import Alert from '../components/Alert';
+import Async from '../components/Async';
 
-const store = createStore(reducer);
-
-export default class Demo extends Component {
-    state = {
-        number: 0,
-        showAlert: false,
-    };
-
-    componentDidMount() {
-        store.subscribe(() => {
-            const newState = store.getState();
-            this.setState({
-                number: newState.changeNumber.number,
-                showAlert: newState.toggleAlert.showAlert,
-            });
-        });
-    }
-
+class Demo extends Component {
     handleClickAdd = () => {
-        store.dispatch({ type: 'INCREMENT' });
+        this.props.dispatch({ type: 'INCREMENT' });
     };
 
     handleClickMinus = () => {
-        store.dispatch({ type: 'DECREMENT' });
+        this.props.dispatch({ type: 'DECREMENT' });
     };
 
     handleClickClear = () => {
-        store.dispatch({ type: 'CLEAR_NUM' });
+        this.props.dispatch({ type: 'CLEAR_NUM' });
     };
 
     handleClickAlert = () => {
-        store.dispatch({ type: 'TOGGLE_ALERT' });
+        this.props.dispatch({ type: 'TOGGLE_ALERT' });
+    };
+
+    handleClickFetch = () => {
+        // TODO
     };
 
     render() {
         const {
             number,
             showAlert,
-        } = this.state;
+            fetching,
+            data,
+        } = this.props;
 
         return (
             <div className="wrap">
-                <h3>react use redux without react-redux</h3>
+                <h3>use redux-saga to async fetch</h3>
                 <Number
                     value={number}
                     handleClickAdd={this.handleClickAdd}
@@ -66,7 +55,23 @@ export default class Demo extends Component {
                     showAlert={showAlert}
                     handleClickAlert={this.handleClickAlert}
                 />
+                <Async
+                    showLoading={fetching}
+                    handleClickFetch={this.handleClickFetch}
+                    data={data}
+                />
             </div>
         );
     }
 }
+
+const mapStateToProps = (state) => ({
+    number: state.changeNumber.number,
+    showAlert: state.toggleAlert.showAlert,
+    fetching: state.asyncFetch.fetching,
+    data: state.asyncFetch.data,
+});
+
+export default connect(
+    mapStateToProps,
+)(Demo);

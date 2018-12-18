@@ -45,7 +45,7 @@ const update = () => {
 
 store.subscribe(update);
 
-export default class Number extends Component {
+export default class Demo extends Component {
     addNum = () => {
         store.dispatch({ type: 'INCREMENT' });
     };
@@ -61,7 +61,7 @@ export default class Number extends Component {
     render() {
         return (
             <div className="wrap">
-                <h3>origin Redux</h3>
+                <h3>all redux in single js file</h3>
                 Current Number: <span className="numValue">0</span>
                 <div>
                     <Button size="large" className="numBtn" onClick={this.addNum}>+</Button>
