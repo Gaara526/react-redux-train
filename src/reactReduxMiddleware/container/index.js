@@ -7,10 +7,10 @@ import React, { Component } from 'react';
 import 'antd/dist/antd.css';
 
 import { connect } from '../lib/react-redux';
-import './index.pcss';
-
 import Number from '../components/Number';
 import Alert from '../components/Alert';
+import actions from '../actions';
+import './index.pcss';
 
 const mapStateToProps = (state) => ({
     number: state.changeNumber.number,
@@ -19,19 +19,19 @@ const mapStateToProps = (state) => ({
 
 class Demo extends Component {
     handleClickAdd = () => {
-        this.props.dispatch({ type: 'INCREMENT' });
+        this.props.dispatch({ type: actions.number.INCREMENT });
     };
 
     handleClickMinus = () => {
-        this.props.dispatch({ type: 'DECREMENT' });
+        this.props.dispatch({ type: actions.number.DECREMENT });
     };
 
     handleClickClear = () => {
-        this.props.dispatch({ type: 'CLEAR_NUM' });
+        this.props.dispatch({ type: actions.number.CLEAR });
     };
 
     handleClickAlert = () => {
-        this.props.dispatch({ type: 'TOGGLE_ALERT' });
+        this.props.dispatch({ type: actions.alert.TOGGLE_ALERT });
     };
 
     render() {

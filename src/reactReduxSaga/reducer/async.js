@@ -3,6 +3,8 @@
  * @author pengyumeng
  */
 
+import actions from '../actions';
+
 const initialState = {
     fetching: false,
     data: null,
@@ -10,12 +12,12 @@ const initialState = {
 
 export default (state = initialState, action) => {
     switch (action.type) {
-        case 'REQUEST_DATA':
+        case actions.async.REQUEST_DATA:
             return {
                 ...state,
                 fetching: true,
             };
-        case 'RECEIVE_DATA':
+        case actions.async.RECEIVE_DATA:
             return {
                 ...state,
                 fetching: false,

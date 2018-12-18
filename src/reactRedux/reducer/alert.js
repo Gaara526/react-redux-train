@@ -3,13 +3,15 @@
  * @author pengyumeng
  */
 
+import actions from '../actions';
+
 const initialState = {
     showAlert: false,
 };
 
 export default (state = initialState, action) => {
     switch (action.type) {
-        case 'TOGGLE_ALERT':
+        case actions.alert.TOGGLE_ALERT:
             return {
                 ...state,
                 showAlert: !state.showAlert,

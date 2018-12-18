@@ -7,31 +7,31 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import 'antd/dist/antd.css';
 
-import './index.pcss';
-
+import actions from '../actions';
 import Number from '../components/Number';
 import Alert from '../components/Alert';
 import Async from '../components/Async';
+import './index.pcss';
 
 class Demo extends Component {
     handleClickAdd = () => {
-        this.props.dispatch({ type: 'INCREMENT' });
+        this.props.dispatch({ type: actions.number.INCREMENT });
     };
 
     handleClickMinus = () => {
-        this.props.dispatch({ type: 'DECREMENT' });
+        this.props.dispatch({ type: actions.number.DECREMENT });
     };
 
     handleClickClear = () => {
-        this.props.dispatch({ type: 'CLEAR_NUM' });
+        this.props.dispatch({ type: actions.number.CLEAR });
     };
 
     handleClickAlert = () => {
-        this.props.dispatch({ type: 'TOGGLE_ALERT' });
+        this.props.dispatch({ type: actions.alert.TOGGLE_ALERT });
     };
 
     handleClickFetch = () => {
-        // TODO
+        this.props.dispatch({ type: actions.async.REQUEST_DATA });
     };
 
     render() {

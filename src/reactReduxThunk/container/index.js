@@ -8,11 +8,11 @@ import fetch from 'isomorphic-fetch';
 import 'antd/dist/antd.css';
 
 import { connect } from '../lib/react-redux';
-import './index.pcss';
-
 import Number from '../components/Number';
 import Alert from '../components/Alert';
 import Async from '../components/Async';
+import actions from '../actions';
+import './index.pcss';
 
 const sleep = (timeout) => {
     return new Promise((resolve) => {
@@ -29,19 +29,19 @@ const mapStateToProps = (state) => ({
 
 class Demo extends Component {
     handleClickAdd = () => {
-        this.props.dispatch({ type: 'INCREMENT' });
+        this.props.dispatch({ type: actions.number.INCREMENT });
     };
 
     handleClickMinus = () => {
-        this.props.dispatch({ type: 'DECREMENT' });
+        this.props.dispatch({ type: actions.number.DECREMENT });
     };
 
     handleClickClear = () => {
-        this.props.dispatch({ type: 'CLEAR_NUM' });
+        this.props.dispatch({ type: actions.number.CLEAR });
     };
 
     handleClickAlert = () => {
-        this.props.dispatch({ type: 'TOGGLE_ALERT' });
+        this.props.dispatch({ type: actions.alert.TOGGLE_ALERT });
     };
 
     handleClickFetch = () => {
@@ -51,7 +51,7 @@ class Demo extends Component {
 
         const asyncFetch = async(dispatch, getState) => {
             // 第一步，请求开始阶段，可以给视图添加 loading 状态
-            dispatch({ type: 'REQUEST_DATA' });
+            dispatch({ type: actions.async.REQUEST_DATA });
 
             // 第二步，发送请求
             await sleep(1000);
@@ -60,7 +60,7 @@ class Demo extends Component {
                 .then((json) => {
                     // 第三步，请求发送成功回调，此时更新数据并关闭 loading 状态
                     dispatch({
-                        type: 'RECEIVE_DATA',
+                        type: actions.async.RECEIVE_DATA,
                         payload: json.msg,
                     });
                 });

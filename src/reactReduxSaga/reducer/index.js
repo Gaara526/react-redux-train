@@ -3,7 +3,7 @@
  * @author pengyumeng
  */
 
-import { combineReducers } from '../lib/redux';
+import { combineReducers } from 'redux';
 import changeNumber from './number';
 import toggleAlert from './alert';
 import asyncFetch from './async';

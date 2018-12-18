@@ -3,23 +3,25 @@
  * @author pengyumeng
  */
 
+import actions from '../actions';
+
 const initialState = {
     number: 0,
 };
 
 export default (state = initialState, action) => {
     switch (action.type) {
-        case 'INCREMENT':
+        case actions.number.INCREMENT:
             return {
                 ...state,
                 number: state.number + 1,
             };
-        case 'DECREMENT':
+        case actions.number.DECREMENT:
             return {
                 ...state,
                 number: state.number - 1,
             };
-        case 'CLEAR_NUM':
+        case actions.number.CLEAR:
             return {
                 ...state,
                 number: 0,

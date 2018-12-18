@@ -8,6 +8,7 @@ import { Alert, Button } from 'antd';
 import 'antd/dist/antd.css';
 
 import { createStore } from './lib/redux';
+import actions from './actions';
 import reducer from './reducer';
 import './originRedux.pcss';
 
@@ -28,20 +29,20 @@ const update = () => {
 store.subscribe(update);
 
 export default class Demo extends Component {
-    addNum = () => {
-        store.dispatch({ type: 'INCREMENT' });
+    handleClickAdd = () => {
+        store.dispatch({ type: actions.number.INCREMENT });
     };
 
-    minusNum = () => {
-        store.dispatch({ type: 'DECREMENT' });
+    handleClickMinus = () => {
+        store.dispatch({ type: actions.number.DECREMENT });
     };
 
-    clearNum = () => {
-        store.dispatch({ type: 'CLEAR_NUM' });
+    handleClickClear = () => {
+        store.dispatch({ type: actions.number.CLEAR });
     };
 
-    toggleAlert = () => {
-        store.dispatch({ type: 'TOGGLE_ALERT' });
+    handleClickAlert = () => {
+        store.dispatch({ type: actions.alert.TOGGLE_ALERT });
     };
 
     render() {
@@ -50,12 +51,12 @@ export default class Demo extends Component {
                 <h3>separate reducer from other</h3>
                 Current Number: <span className="numValue">0</span>
                 <div>
-                    <Button size="large" className="numBtn" onClick={this.addNum}>+</Button>
-                    <Button size="large" className="numBtn" onClick={this.minusNum}>-</Button>
-                    <Button size="large" className="numBtn" onClick={this.clearNum}>clear</Button>
+                    <Button size="large" className="numBtn" onClick={this.handleClickAdd}>+</Button>
+                    <Button size="large" className="numBtn" onClick={this.handleClickMinus}>-</Button>
+                    <Button size="large" className="numBtn" onClick={this.handleClickClear}>clear</Button>
                 </div>
                 <div>
-                    <Button size="large" className="numBtn" onClick={this.toggleAlert}>alert</Button>
+                    <Button size="large" className="numBtn" onClick={this.handleClickAlert}>alert</Button>
                     <Alert className="alert" message="Hello Redux" type="success" style={{ display: 'none' }} />
                 </div>
             </div>

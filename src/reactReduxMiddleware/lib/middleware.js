@@ -3,9 +3,9 @@
  * @author pengyumeng
  */
 
-// 只打印出 action
+// 只打印出 actions
 const loggerAction = (store) => (dispatch) => (action) => {
-    console.log('action: ', action);
+    console.log('actions: ', action);
     dispatch(action);
 };
 

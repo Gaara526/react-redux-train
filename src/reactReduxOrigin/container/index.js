@@ -7,11 +7,11 @@ import React, { Component } from 'react';
 import 'antd/dist/antd.css';
 
 import { createStore } from '../lib/redux';
-import reducer from '../reducer';
-import './index.pcss';
-
 import Number from '../components/Number';
 import Alert from '../components/Alert';
+import actions from '../actions';
+import reducer from '../reducer';
+import './index.pcss';
 
 const store = createStore(reducer);
 
@@ -32,19 +32,19 @@ export default class Demo extends Component {
     }
 
     handleClickAdd = () => {
-        store.dispatch({ type: 'INCREMENT' });
+        store.dispatch({ type: actions.number.INCREMENT });
     };
 
     handleClickMinus = () => {
-        store.dispatch({ type: 'DECREMENT' });
+        store.dispatch({ type: actions.number.DECREMENT });
     };
 
     handleClickClear = () => {
-        store.dispatch({ type: 'CLEAR_NUM' });
+        store.dispatch({ type: actions.number.CLEAR });
     };
 
     handleClickAlert = () => {
-        store.dispatch({ type: 'TOGGLE_ALERT' });
+        store.dispatch({ type: actions.alert.TOGGLE_ALERT });
     };
 
     render() {

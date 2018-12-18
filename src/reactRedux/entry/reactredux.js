@@ -16,10 +16,10 @@ const store = createStore(reducer);
 
 // const preDispatch = store.dispatch;
 //
-// store.dispatch = (action) => {
+// store.dispatch = (actions) => {
 //     console.log('current state: ', store.getState());
-//     console.log('action: ', action);
-//     preDispatch(action);
+//     console.log('actions: ', actions);
+//     preDispatch(actions);
 //     console.log('next state: ', store.getState());
 // };
 

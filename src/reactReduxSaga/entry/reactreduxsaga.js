@@ -7,12 +7,23 @@ import React from 'react';
 import { render } from 'react-dom';
 import { AppContainer } from 'react-hot-loader';
 import { applyMiddleware, compose, createStore } from 'redux';
+import createSagaMiddleware from 'redux-saga';
 import { Provider } from 'react-redux';
 
 import reducer from '../reducer';
 import Demo from '../container';
+import rootSaga from '../saga';
 
-const store = createStore(reducer);
+const sagaMiddleware = createSagaMiddleware();
+const middleware = [
+    sagaMiddleware,
+];
+
+const store = createStore(reducer, compose(
+    applyMiddleware(...middleware),
+));
+
+sagaMiddleware.run(rootSaga);
 
 render(
     <AppContainer>

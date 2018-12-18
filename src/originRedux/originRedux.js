@@ -46,15 +46,15 @@ const update = () => {
 store.subscribe(update);
 
 export default class Demo extends Component {
-    addNum = () => {
+    handleClickAdd = () => {
         store.dispatch({ type: 'INCREMENT' });
     };
 
-    minusNum = () => {
+    handleClickMinus = () => {
         store.dispatch({ type: 'DECREMENT' });
     };
 
-    clearNum = () => {
+    handleClickClear = () => {
         store.dispatch({ type: 'CLEAR_NUM' });
     };
 
@@ -64,9 +64,9 @@ export default class Demo extends Component {
                 <h3>all redux in single js file</h3>
                 Current Number: <span className="numValue">0</span>
                 <div>
-                    <Button size="large" className="numBtn" onClick={this.addNum}>+</Button>
-                    <Button size="large" className="numBtn" onClick={this.minusNum}>-</Button>
-                    <Button size="large" className="numBtn" onClick={this.clearNum}>clear</Button>
+                    <Button size="large" className="numBtn" onClick={this.handleClickAdd}>+</Button>
+                    <Button size="large" className="numBtn" onClick={this.handleClickMinus}>-</Button>
+                    <Button size="large" className="numBtn" onClick={this.handleClickClear}>clear</Button>
                 </div>
             </div>
         );
