@@ -4,26 +4,21 @@
  */
 
 import fetch from 'isomorphic-fetch';
-import { call, put, takeEvery } from 'redux-saga/effects';
+import { delay } from 'redux-saga';
+import { take, call, put, takeEvery } from 'redux-saga/effects';
 
 import actions from '../actions';
 
-const sleep = (timeout) => {
-    return new Promise((resolve) => {
-        setTimeout(resolve, timeout);
-    });
+const p = () => {
+    return fetch('./api/asyncFetchData.json')
+        .then((response) => response.json())
+        .then((json) => {
+            return json.msg;
+        });
 };
 
 function* asyncFetch() {
-    const p = () => {
-        return fetch('./api/asyncFetchData.json')
-            .then((response) => response.json())
-            .then((json) => {
-                return json.msg;
-            });
-    };
-
-    yield sleep(1000);
+    yield delay(1000);
     const payload = yield call(p);
 
     yield put({
@@ -33,7 +28,18 @@ function* asyncFetch() {
 }
 
 function* rootSaga() {
-    yield takeEvery(actions.async.REQUEST_DATA, asyncFetch);
+    // yield takeEvery(actions.async.REQUEST_DATA, asyncFetch);
+    while (true) {
+        yield take(actions.async.REQUEST_DATA);
+
+        yield delay(1000);
+        const payload = yield call(p);
+
+        yield put({
+            type: actions.async.RECEIVE_DATA,
+            payload,
+        });
+    }
 }
 
 export default rootSaga;
