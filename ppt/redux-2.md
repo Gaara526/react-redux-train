@@ -36,15 +36,23 @@ pengyumeng
 
 [slide]
 
-# <font color=#0099ff>异步 action</font>
+# <font color=#0099ff>redux 副作用</font>
 
-- 需要异步操作时（ajax 请求，读取文件等），你需要异步 action
+- redux 本身遵循函数式编程的规则，action 是一个原始 js 对象，reducer 是一个纯函数，对于同步且没有副作用的操作
 
-- action 本质是 plain object ，不存在同步异步的概念。所谓异步 action ，本质上是<font color=#ff9933>打包一系列 action 动作</font>
+- 异步操作时（ajax 请求，读取文件等），就会产生副作用
+
+![reduxsaga](../img/reduxsaga.png)
 
 [slide]
 
-# <font color=#0099ff>redux-thunk 异步中间件</font>
+# <font color=#0099ff>redux 异步中间件</font>
+
+- 异步中间件的作用：处理异步操作产生的副作用，生成原始的 action ，这样 reducer 函数就能处理相应的 action ，从而改变 state ，更新 UI。
+
+[slide]
+
+# <font color=#0099ff>redux-thunk</font>
 
 - 例如网络请求数据：
 
@@ -54,7 +62,7 @@ pengyumeng
 
 - （3）dispatch 出结果 action（携带服务器返回了的数据或异常）去更新 state
 
-- <font color=#ff9933>redux-thunk 的作用：将这三步封装到一个 function 中，以实现打包一系列 action 动作的目的</font>
+- <font color=#ff9933>redux-thunk 的作用：将这三步封装到一个 action function 中，以实现打包一系列 action 动作的目的</font>
 
 [slide]
 
@@ -110,7 +118,155 @@ this.props.dispatch(asyncFetch);
 
 [slide]
 
+# <font color=#0099ff>redux-saga 原理</font>
+
+- 所有副作用处理封装在一个 Generator 函数里处理；
+
+- Generator 函数的作用有三个：
+
+- （1）监听所有 dispatch 的 action ；
+
+- （2）如果监听到匹配的 action 则开始处理副作用（异步调用）；
+
+- （3）返回 action 原始对象以供 reducer 使用；
+
+[slide]
+
+# <font color=#0099ff>redux-saga 使用举例</font>
+
+``` JavaScript
+// Generator 函数
+function* rootSaga() {
+    while (true) {
+        yield take(actions.async.REQUEST_DATA);
+
+        yield delay(1000);
+        const payload = yield call(() => {
+           return fetch('./api/asyncFetchData.json')
+               .then((response) => response.json())
+               .then((json) => {
+                   return json.msg;
+               });
+        });
+
+        yield put({
+            type: actions.async.RECEIVE_DATA,
+            payload,
+        });
+    }
+}
+
+// 必须事先运行这个 Generator 函数
+sagaMiddleware.run(rootSaga);
+
+// 使用 take 监听后，disaptch 相同 type 的 action 就会被监听到，并执行 take 后的代码；
+this.props.dispatch({ type: actions.async.REQUEST_DATA });
+```
+
+[slide]
+
 [例子 redux-saga 异步中间件](http://0.0.0.0:9999/reactreduxsaga.html)
+
+[slide]
+
+# <font color=#0099ff>redux-saga 如何实现监听？</font>
+
+``` JavaScript
+// 注册监听
+const channel = () => {
+    let taker;
+    return {
+        take: (cb) => {
+            // 注册监听事件
+            taker = cb;
+        },
+        put: (input) => {
+            // 当匹配到监听事件，如果事件已经注册过，则执行相应代码
+            if (taker) {
+                const tempTaker = taker;
+                taker = null;
+                tempTaker(input);
+            }
+        },
+    };
+};
+const chan = channel();
+
+// 遇到 take 方法执行的函数；
+const runTakeEffect = (cb) => {
+    // 注册监听事件
+    chan.take((input) => {
+        cb(input);
+    });
+};
+
+const take = () => ({
+    type: 'take',
+});
+
+// 核心：Generator 执行器
+function run(iterator) {
+    const iter = iterator();
+    function next(args) {
+        const result = iter.next(args);
+        if (!result.done) {
+            const effect = result.value;
+            if (effect.type === 'take') {
+                /*
+                 * 如果遇到 take 方法，则注册监听事件
+                 * 此时 Generator 会暂停执行，直到监听的事件发生了才会恢复执行
+                 * 即 next 执行权限交给了外部代码
+                 */
+                runTakeEffect(next);
+            }
+        }
+    }
+    next();
+}
+
+function* rootSaga() {
+    // 第一步就是注册监听事件
+    const action = yield take();
+    console.log(action);
+}
+run(rootSaga);
+
+$btn.addEventListener('click', () => {
+    const action = 'action data';
+    // 这里的 put 类似 dispatch ;
+    chan.put(action);
+}, false);
+```
+
+[slide]
+
+# <font color=#0099ff>redux thunk 和 redux-saga 比较</font>
+
+- redux-thunk
+![reduxsaga1](../img/reduxsaga1.png)
+
+- redux-saga
+![reduxsaga2](../img/reduxsaga2.png)
+
+[slide]
+
+# <font color=#0099ff>redux-thunk 缺点</font>
+
+- action 的形式不统一
+
+- 异步操作太分散，分散在了各个 action 中
+
+[slide]
+
+# <font color=#0099ff>redux-saga 优点</font>
+
+- 统一的 action 的形式
+
+- 异步的操作都在 sagas 中做统一处理，流程逻辑更清晰，模块更干净
+
+- <font color=#ff9933>以同步的方式写异步代码，可以做一些 async 函数做不到的事情 (无阻塞并发、取消请求)</font>
+
+- <font color=#ff9933>能容易地写一些单元测试对 Generator 里所有的业务逻辑进行测试</font>
 
 [slide]
 
