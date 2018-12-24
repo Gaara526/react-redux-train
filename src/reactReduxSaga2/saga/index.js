@@ -26,7 +26,7 @@ const fetch2 = () => {
 };
 
 function* saga1() {
-    yield call(delay, 1000);
+    yield call(delay, 1500);
     const payload = yield call(fetch1);
 
     yield put({
@@ -36,7 +36,7 @@ function* saga1() {
 }
 
 function* saga2() {
-    yield call(delay, 1000);
+    yield call(delay, 1500);
     const payload = yield call(fetch2);
 
     yield put({

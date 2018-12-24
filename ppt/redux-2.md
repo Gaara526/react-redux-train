@@ -264,15 +264,19 @@ $btn.addEventListener('click', () => {
 
 - 异步的操作都在 sagas 中做统一处理，流程逻辑更清晰，模块更干净
 
-- <font color=#ff9933>以同步的方式写异步代码，可以做一些 async 函数做不到的事情 (无阻塞并发、取消进程)</font>
+- <font color=#ff9933>以同步的方式写异步代码，可以做一些“一个 async 函数”做不到的事情 (无阻塞并发、取消进程)</font>
 
-- <font color=#ff9933>能容易地写一些单元测试对 Generator 里所有的业务逻辑进行测试</font>
+- <font color=#ff9933>声明式的写法能容易地对 Generator 里所有的业务逻辑进行单元测试</font>
 
 [slide]
 
 # <font color=#0099ff>redux-saga 无阻塞并发</font>
 
 - redux-saga 是通过<font color=#ff9933> fork </font>方法实现无阻塞并发；
+
+- fork 意为分叉，一般在项目中用来创建多个并行 saga 子任务；
+
+- fork 实现的底层原理如下：
 
 ``` JavaScript
 function runForkEffect(effect, cb) {
@@ -297,6 +301,7 @@ if (effect.type === 'fork') {
 
 ``` JavaScript
 function runCancelEffect(effect, cb) {
+    // 调用 Generator 的 return 方法，Generator 后续进程不再执行；
     effect.gen.return();
 }
 
@@ -310,6 +315,72 @@ if (effect.type === 'cancel') {
 [slide]
 
 [例子 redux-saga 无阻塞并发和取消进程](http://0.0.0.0:9999/reactreduxsaga2.html)
+
+[slide]
+
+# <font color=#0099ff>redux-saga 声明式 Effects</font>
+
+- Effect 是一个简单纯粹的 js 对象，可以使用 redux-saga/effects 来创建一个 Effect ；
+
+- Effect 包含了一些给 Generator 执行器内部解释执行的信息；
+
+[slide]
+
+# <font color=#0099ff>redux-saga 常用生成 Effect 的 api</font>
+
+- take ：监听 dispatch 的 action
+
+- put ：替代 dispatch 方法，通知 redux 执行 reducer 函数
+
+- call ：阻塞式调用
+
+- fork ：无阻塞调用
+
+- cancel ：取消某个进程
+
+[slide]
+
+# <font color=#0099ff>redux-saga 声明式 Effects 的优势</font>
+
+- 方便单元测试
+
+``` JavaScript
+// 非声明式写法；
+yield Ajax.get({
+    url: 'xxx',
+    params,
+});
+
+// 调用 call 声明式写法
+yield call(Ajax.get, {
+    url: 'xxx',
+    params,
+});
+
+// 执行每一步 Generator 我们期望得到？非声明式返回一个 Promise，声明式返回一个纯对象
+iterator.next().value
+
+// 返回的纯对象大概是下面这种形式，对于单元测试非常友好
+{
+    CALL: {
+        fn: Ajax.get,
+        args: {
+            url: 'xxx',
+            params,
+        },
+    }
+}
+```
+
+[slide]
+
+# <font color=#0099ff>redux-saga 高阶 api</font>
+
+- takeEvery(pattern, saga, ...args) ：dispatch 的 action.type 匹配 pattern 时派生一个 saga 任务；
+
+- takeLatest(pattern, saga, ...args) ：相对 takeEvery 在匹配到 pattern 会自动取消之前所有已经启动但仍在执行中的 saga 任务；
+
+[例子 redux-saga 高阶 api](http://0.0.0.0:9999/reactreduxsaga.html)
 
 [slide]
 

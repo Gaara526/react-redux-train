@@ -5,7 +5,7 @@
 
 import fetch from 'isomorphic-fetch';
 import { delay } from 'redux-saga';
-import { take, call, put, takeEvery } from 'redux-saga/effects';
+import { call, put, take, takeEvery, takeLatest } from 'redux-saga/effects';
 
 import actions from '../actions';
 
@@ -18,7 +18,7 @@ const p = () => {
 };
 
 function* asyncFetch() {
-    yield call(delay, 1000);
+    yield call(delay, 1500);
     const payload = yield call(p);
 
     yield put({
@@ -28,11 +28,10 @@ function* asyncFetch() {
 }
 
 function* rootSaga() {
-    // yield takeEvery(actions.async.REQUEST_DATA, asyncFetch);
     while (true) { // eslint-disable-line no-constant-condition
         yield take(actions.async.REQUEST_DATA);
 
-        yield call(delay, 1000);
+        yield call(delay, 1500);
         const payload = yield call(p);
 
         yield put({
@@ -40,6 +39,8 @@ function* rootSaga() {
             payload,
         });
     }
+    // yield takeEvery(actions.async.REQUEST_DATA, asyncFetch);
+    // yield takeLatest(actions.async.REQUEST_DATA, asyncFetch);
 }
 
 export default rootSaga;
