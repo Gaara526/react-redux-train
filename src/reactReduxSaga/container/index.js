@@ -38,7 +38,6 @@ class Demo extends Component {
         const {
             number,
             showAlert,
-            fetching,
             data,
         } = this.props;
 
@@ -56,7 +55,6 @@ class Demo extends Component {
                     handleClickAlert={this.handleClickAlert}
                 />
                 <Async
-                    showLoading={fetching}
                     handleClickFetch={this.handleClickFetch}
                     data={data}
                 />
@@ -68,7 +66,6 @@ class Demo extends Component {
 const mapStateToProps = (state) => ({
     number: state.changeNumber.number,
     showAlert: state.toggleAlert.showAlert,
-    fetching: state.asyncFetch.fetching,
     data: state.asyncFetch.data,
 });
 

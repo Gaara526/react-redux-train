@@ -264,9 +264,52 @@ $btn.addEventListener('click', () => {
 
 - 异步的操作都在 sagas 中做统一处理，流程逻辑更清晰，模块更干净
 
-- <font color=#ff9933>以同步的方式写异步代码，可以做一些 async 函数做不到的事情 (无阻塞并发、取消请求)</font>
+- <font color=#ff9933>以同步的方式写异步代码，可以做一些 async 函数做不到的事情 (无阻塞并发、取消进程)</font>
 
 - <font color=#ff9933>能容易地写一些单元测试对 Generator 里所有的业务逻辑进行测试</font>
+
+[slide]
+
+# <font color=#0099ff>redux-saga 无阻塞并发</font>
+
+- redux-saga 是通过<font color=#ff9933> fork </font>方法实现无阻塞并发；
+
+``` JavaScript
+function runForkEffect(effect, cb) {
+    effect.fn();
+    // 执行 fork Effect 方法传入函数时并不影响执行 Generator 继续执行
+    cb();
+}
+
+...
+if (effect.type === 'fork') {
+    runForkEffect(effect, next);
+}
+...
+```
+
+[slide]
+
+# <font color=#0099ff>redux-saga 取消进程</font>
+
+- redux-saga 是通过<font color=#ff9933> cancel </font>方法实现无阻塞并发；
+- 原理是调用底层 Generator 对象上的 return 方法；
+
+``` JavaScript
+function runCancelEffect(effect, cb) {
+    effect.gen.return();
+}
+
+...
+if (effect.type === 'cancel') {
+    runCancelEffect(effect, next);
+}
+...
+```
+
+[slide]
+
+[例子 redux-saga 无阻塞并发和取消进程](http://0.0.0.0:9999/reactreduxsaga2.html)
 
 [slide]
 

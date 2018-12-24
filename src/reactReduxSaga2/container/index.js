@@ -4,21 +4,14 @@
  */
 
 import React, { Component } from 'react';
-import fetch from 'isomorphic-fetch';
+import { connect } from 'react-redux';
 import 'antd/dist/antd.css';
 
-import { connect } from '../lib/react-redux';
+import actions from '../actions';
 import Number from '../components/Number';
 import Alert from '../components/Alert';
 import Async from '../components/Async';
-import actions from '../actions';
 import './index.pcss';
-
-const sleep = (timeout) => {
-    return new Promise((resolve) => {
-        setTimeout(resolve, timeout);
-    });
-};
 
 class Demo extends Component {
     handleClickAdd = () => {
@@ -38,28 +31,11 @@ class Demo extends Component {
     };
 
     handleClickFetch = () => {
-        if (this.props.fetching) {
-            return;
-        }
+        this.props.dispatch({ type: actions.async.REQUEST_DATA });
+    };
 
-        const asyncFetch = async(dispatch, getState) => {
-            // 第一步，请求开始阶段，可以给视图添加 loading 状态
-            dispatch({ type: actions.async.REQUEST_DATA });
-
-            // 第二步，发送请求
-            await sleep(1000);
-            fetch('./api/asyncFetchData.json')
-                .then((response) => response.json())
-                .then((json) => {
-                    // 第三步，请求发送成功回调，此时更新数据并关闭 loading 状态
-                    dispatch({
-                        type: actions.async.RECEIVE_DATA,
-                        payload: json.msg,
-                    });
-                });
-        };
-
-        this.props.dispatch(asyncFetch);
+    handleClickCancel = () => {
+        this.props.dispatch({ type: actions.async.CANCEL_FETCH });
     };
 
     render() {
@@ -67,11 +43,12 @@ class Demo extends Component {
             number,
             showAlert,
             data,
+            data2,
         } = this.props;
 
         return (
             <div className="wrap">
-                <h3>use redux-thunk to async fetch</h3>
+                <h3>use redux-saga to async fetch</h3>
                 <Number
                     value={number}
                     handleClickAdd={this.handleClickAdd}
@@ -84,7 +61,9 @@ class Demo extends Component {
                 />
                 <Async
                     handleClickFetch={this.handleClickFetch}
+                    handleClickCancel={this.handleClickCancel}
                     data={data}
+                    data2={data2}
                 />
             </div>
         );
@@ -95,6 +74,7 @@ const mapStateToProps = (state) => ({
     number: state.changeNumber.number,
     showAlert: state.toggleAlert.showAlert,
     data: state.asyncFetch.data,
+    data2: state.asyncFetch.data2,
 });
 
 export default connect(

@@ -18,7 +18,7 @@ const p = () => {
 };
 
 function* asyncFetch() {
-    yield delay(1000);
+    yield call(delay, 1000);
     const payload = yield call(p);
 
     yield put({
@@ -29,10 +29,10 @@ function* asyncFetch() {
 
 function* rootSaga() {
     // yield takeEvery(actions.async.REQUEST_DATA, asyncFetch);
-    while (true) {
+    while (true) { // eslint-disable-line no-constant-condition
         yield take(actions.async.REQUEST_DATA);
 
-        yield delay(1000);
+        yield call(delay, 1000);
         const payload = yield call(p);
 
         yield put({

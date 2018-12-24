@@ -6,7 +6,6 @@
 import actions from '../actions';
 
 const initialState = {
-    fetching: false,
     data: null,
 };
 
@@ -15,12 +14,10 @@ export default (state = initialState, action) => {
         case actions.async.REQUEST_DATA:
             return {
                 ...state,
-                fetching: true,
             };
         case actions.async.RECEIVE_DATA:
             return {
                 ...state,
-                fetching: false,
                 data: action.payload,
             };
         default:
