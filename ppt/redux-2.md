@@ -326,7 +326,7 @@ if (effect.type === 'cancel') {
 
 [slide]
 
-# <font color=#0099ff>redux-saga 常用生成 Effect 的 api</font>
+# <font color=#0099ff>redux-saga 常用生成 Effect 的 API</font>
 
 - take ：监听 dispatch 的 action
 
@@ -374,13 +374,29 @@ iterator.next().value
 
 [slide]
 
-# <font color=#0099ff>redux-saga 高阶 api</font>
+# <font color=#0099ff>redux-saga 高阶 API</font>
 
-- takeEvery(pattern, saga, ...args) ：dispatch 的 action.type 匹配 pattern 时派生一个 saga 任务；
+- <font color=#ff9933> takeEvery(pattern, saga, ...args) </font>：dispatch 的 action.type 匹配 pattern 时派生一个 saga 任务；
 
-- takeLatest(pattern, saga, ...args) ：相对 takeEvery 在匹配到 pattern 会自动取消之前所有已经启动但仍在执行中的 saga 任务；
+- <font color=#ff9933> takeLatest(pattern, saga, ...args) </font>：相对 takeEvery 在匹配到 pattern 会自动取消之前所有已经启动但仍在执行中的 saga 任务；
+
+- 高阶 API 具有更好地绑定监听事件的语义，帮助我们管理 saga ； 
 
 [例子 redux-saga 高阶 api](http://0.0.0.0:9999/reactreduxsaga.html)
+
+[slide]
+
+# <font color=#0099ff>redux-saga 总结回顾</font>
+
+- redux-saga 把异步处理封装在 Generator 函数执行，通过 Generator 实现 dispatch 监听、异步调用、将异步调用结果返回以供 reducer 使用；
+
+- 使用 redux-saga 后，在处理异步调用时也能保持 dispatch 的 action 在形式上的统一；
+
+- redux-saga 通过 fork 方法实现并发，一般在项目中通过 fork 创建多个并行的子 saga 任务；
+
+- 声明式的写法更有利于单元测试；
+
+- 高阶 API 具有更好地绑定监听事件的语义，帮助我们管理 saga ；
 
 [slide]
 
