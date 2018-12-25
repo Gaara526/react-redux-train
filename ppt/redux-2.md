@@ -336,6 +336,8 @@ if (effect.type === 'cancel') {
 
 - fork ：无阻塞调用
 
+- select ：获取 store 中存储的 state
+
 - cancel ：取消某个进程
 
 [slide]
