@@ -38,7 +38,7 @@ pengyumeng
 
 # <font color=#0099ff>redux 副作用</font>
 
-- redux 本身遵循函数式编程的规则，action 是一个原始 js 对象，reducer 是一个纯函数，对于同步且没有副作用的操作
+- redux 本身遵循函数式编程的规则，action 是一个原始 js 对象，reducer 是一个纯函数
 
 - 异步操作时（ajax 请求，读取文件等），就会产生副作用
 

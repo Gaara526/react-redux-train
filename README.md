@@ -55,3 +55,15 @@ http://0.0.0.0:9999/reactreduxthunk.html
 use redux-saga to async fetch
  
 http://0.0.0.0:9999/reactreduxsaga.html
+
+### Chapter 8 reactReduxSagaForkCancel
+
+fork and cancel of redux-saga
+ 
+http://0.0.0.0:9999/reactreduxsaga2.html
+
+### Chapter 8 reactReduxSagaHighOrderAPI
+
+takeEvery and takeLatest of redux-saga
+ 
+http://0.0.0.0:9999/reactreduxsaga3.html
