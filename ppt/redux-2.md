@@ -5,7 +5,7 @@ transition: move
 
 [slide]
 
-# Redux
+# Redux 异步中间件
 pengyumeng
 
 [slide]
@@ -38,7 +38,7 @@ pengyumeng
 
 # <font color=#0099ff>redux 副作用</font>
 
-- redux 本身遵循函数式编程的规则，action 是一个原始 js 对象，reducer 是一个纯函数
+- redux 本身遵循函数式编程的规则，action 是一个 plain object ，reducer 是一个纯函数
 
 - 异步操作时（ajax 请求，读取文件等），就会产生副作用
 
@@ -201,7 +201,7 @@ const runTakeEffect = (cb) => {
 };
 
 const take = () => ({
-    type: 'take',
+    type: 'TAKE',
 });
 
 // 核心：Generator 执行器
@@ -211,7 +211,7 @@ function run(iterator) {
         const result = iter.next(args);
         if (!result.done) {
             const effect = result.value;
-            if (effect.type === 'take') {
+            if (effect.type === 'TAKE') {
                 /*
                  * 如果遇到 take 方法，则注册监听事件
                  * 此时 Generator 会暂停执行，直到监听的事件发生了才会恢复执行
@@ -276,6 +276,8 @@ $btn.addEventListener('click', () => {
 
 - fork 意为分叉，一般在项目中用来创建多个并行 saga 子任务；
 
+- 调用 fork 方法返回的是一个子任务，子任务作为参数传给 cancel 方法被取消；
+
 - fork 实现的底层原理如下：
 
 ``` JavaScript
@@ -286,7 +288,7 @@ function runForkEffect(effect, cb) {
 }
 
 ...
-if (effect.type === 'fork') {
+if (effect.type === 'FORK') {
     runForkEffect(effect, next);
 }
 ...
@@ -296,7 +298,8 @@ if (effect.type === 'fork') {
 
 # <font color=#0099ff>redux-saga 取消进程</font>
 
-- redux-saga 是通过<font color=#ff9933> cancel </font>方法实现无阻塞并发；
+- redux-saga 是通过<font color=#ff9933> cancel </font>方法实现取消进程；
+
 - 原理是调用底层 Generator 对象上的 return 方法；
 
 ``` JavaScript
@@ -306,7 +309,7 @@ function runCancelEffect(effect, cb) {
 }
 
 ...
-if (effect.type === 'cancel') {
+if (effect.type === 'CANCEL') {
     runCancelEffect(effect, next);
 }
 ...
@@ -318,15 +321,27 @@ if (effect.type === 'cancel') {
 
 [slide]
 
-# <font color=#0099ff>redux-saga 声明式 Effects</font>
+# <font color=#0099ff>redux-saga 声明式 effects</font>
 
-- Effect 是一个简单纯粹的 js 对象，可以使用 redux-saga/effects 来创建一个 Effect ；
+- effect 是一个 plan object ，可以使用 redux-saga/effects 提供的 api 来创建一个 effect ；
 
-- Effect 包含了一些给 Generator 执行器内部解释执行的信息；
+- effect 包含了一些给 Generator 执行器内部解释执行的信息；
+
+``` JavaScript
+// 例如调用 call 返回的 一个 effect
+{
+    type: 'CALL',
+    fn: Ajax.get,
+    args: {
+        url: 'xxx',
+        params,
+    },
+}
+```
 
 [slide]
 
-# <font color=#0099ff>redux-saga 常用生成 Effect 的 API</font>
+# <font color=#0099ff>redux-saga 常用生成 effect 的 API</font>
 
 - take ：监听 dispatch 的 action
 
@@ -342,7 +357,7 @@ if (effect.type === 'cancel') {
 
 [slide]
 
-# <font color=#0099ff>redux-saga 声明式 Effects 的优势</font>
+# <font color=#0099ff>redux-saga 声明式 effects 的优势</font>
 
 - 方便单元测试
 
@@ -359,18 +374,18 @@ yield call(Ajax.get, {
     params,
 });
 
-// 执行每一步 Generator 我们期望得到？非声明式返回一个 Promise，声明式返回一个纯对象
+// Generator 一个很大优势就是可以对函数中的每一步 yeild 产生的值进行单元测试
+// 那么返回的值是什么样子才是对单元测试友好的呢？
 iterator.next().value
 
-// 返回的纯对象大概是下面这种形式，对于单元测试非常友好
+// 对于单元测试非常友好
 {
-    CALL: {
-        fn: Ajax.get,
-        args: {
-            url: 'xxx',
-            params,
-        },
-    }
+    type: 'CALL',
+    fn: Ajax.get,
+    args: {
+        url: 'xxx',
+        params,
+    },
 }
 ```
 

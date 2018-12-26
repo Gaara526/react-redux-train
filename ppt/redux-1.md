@@ -5,8 +5,15 @@ transition: move
 
 [slide]
 
-# Redux
+# Redux 详解
 pengyumeng
+
+[slide]
+
+# <font color=#0099ff>问题</font>
+
+- this.props.dispatch ？
+- 为啥 dispatch 数据就会变化 ？
 
 [slide]
 
@@ -206,7 +213,7 @@ store.getState().changeNumber.number
 
 # <font color=#0099ff>subscribe(listener)</font>
 
-- 注册监听函数
+- 注册 state 更新后需要执行的事件
 
 ``` JavaScript
 const update = () => {
@@ -219,10 +226,6 @@ store.subscribe(update);
 - 该方法的返回值也是一个函数对象，用以取消注册的回调函数
 
 ``` JavaScript
-const update = () => {
-    // 更新 view
-};
-
 const cancelUpdate = store.subscribe(update);
 
 <Button onClick={cancelUpdate}>unsubscribe</Button>
@@ -234,23 +237,7 @@ const cancelUpdate = store.subscribe(update);
 
 - 派发 action
 - 通知 reducer 去更新 state
-- 执行监听函数
-
-``` JavaScript
-store.dispatch(actions.number.incrementNum());
-```
-
-[slide]
-
-# <font color=#0099ff>初始态流转图</font>
-
-![initRedux](../img/initRedux.jpg)
-
-[slide]
-
-# <font color=#0099ff>更新态流转图</font>
-
-![doRedux](../img/doRedux.jpg)
+- 执行注册事件
 
 [slide]
 
@@ -258,15 +245,23 @@ store.dispatch(actions.number.incrementNum());
 
 ``` JavaScript
 export const createStore = (reducer) => {
+    // state 存放所有数据，getState 返回数据
     let state;
-    const listeners = [];
     const getState = () => state;
+    
+    // listeners 存放 state 更新后要执行的事件，subscribe 实现事件注册
+    const listeners = [];
+    const subscribe = (listener) => listeners.push(listener);
+    
+    // dispatch 接收 action ，reducer 执行 state 的更新，更新后执行之前绑定过的注册事件
     const dispatch = (action) => {
         state = reducer(state, action);
         listeners.forEach((listener) => listener());
     };
-    const subscribe = (listener) => listeners.push(listener);
-    dispatch({});
+    
+    // 初始化 store 的时候会默认执行一遍 dispatch ，以获得最初的 state
+    // 这就是你为什么要在 reducer 里设置 initialState 的原因
+    dispatch({}); 
 
     return {
         getState,
@@ -321,6 +316,18 @@ export const combineReducers = (reducers) => {
 
 [slide]
 
+# <font color=#0099ff>初始态流转图</font>
+
+![initRedux](../img/initRedux.jpg)
+
+[slide]
+
+# <font color=#0099ff>更新态流转图</font>
+
+![doRedux](../img/doRedux.jpg)
+
+[slide]
+
 # <font color=#0099ff>Part 1</font>
 
 - <font color=#0099ff>概述</font>
@@ -353,7 +360,7 @@ componentDidMount() {
 
 # <font color=#0099ff>单独使用 redux 缺点</font>
 
-- 使用 store 中数据都需要单独绑定监听事件，代码重复
+- 使用 store 中数据的地方都需要单独注册更新后的事件，不利于工程化
 
 [slide]
 

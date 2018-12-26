@@ -12,11 +12,6 @@ import Alert from '../components/Alert';
 import actions from '../actions';
 import './index.pcss';
 
-const mapStateToProps = (state) => ({
-    number: state.changeNumber.number,
-    showAlert: state.toggleAlert.showAlert,
-});
-
 class Demo extends Component {
     handleClickAdd = () => {
         this.props.dispatch({ type: actions.number.INCREMENT });
@@ -58,6 +53,9 @@ class Demo extends Component {
     }
 }
 
-export default connect(
-    mapStateToProps,
-)(Demo);
+const mapStateToProps = (state) => ({
+    number: state.changeNumber.number,
+    showAlert: state.toggleAlert.showAlert,
+});
+
+export default connect(mapStateToProps)(Demo);

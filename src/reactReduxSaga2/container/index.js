@@ -48,7 +48,7 @@ class Demo extends Component {
 
         return (
             <div className="wrap">
-                <h3>use redux-saga to async fetch</h3>
+                <h3>fork and cancel of redux-saga</h3>
                 <Number
                     value={number}
                     handleClickAdd={this.handleClickAdd}

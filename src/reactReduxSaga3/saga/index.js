@@ -28,17 +28,31 @@ function* asyncFetch() {
 }
 
 function* rootSaga() {
-    // takeEvery 采用非阻塞的方式，每次操作都能被监听到，并且每次都请求数据
     // while (true) { // eslint-disable-line no-constant-condition
     //     yield take(actions.async.REQUEST_DATA);
-    //     yield fork(asyncFetch);
+    //     console.log('take');
+    //
+    //     yield call(delay, 1500);
+    //     const payload = yield call(p);
+    //
+    //     yield put({
+    //         type: actions.async.RECEIVE_DATA,
+    //         payload,
+    //     });
     // }
+    // takeEvery 采用非阻塞的方式，每次操作都能被监听到，并且每次都请求数据
+    while (true) { // eslint-disable-line no-constant-condition
+        yield take(actions.async.REQUEST_DATA);
+        console.log('takeEvery');
+        yield fork(asyncFetch);
+    }
     // yield takeEvery(actions.async.REQUEST_DATA, asyncFetch);
 
     // takeLatest 同样采用非阻塞的方式，每次操作都能被监听到，但是新来的操作被监听到会取消上次的任务
     // let task = null;
     // while (true) { // eslint-disable-line no-constant-condition
     //     yield take(actions.async.REQUEST_DATA);
+    //     console.log('takeLatest');
     //     if (task) {
     //         yield cancel(task);
     //     }

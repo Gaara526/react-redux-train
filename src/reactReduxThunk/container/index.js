@@ -38,16 +38,12 @@ class Demo extends Component {
     };
 
     handleClickFetch = () => {
-        if (this.props.fetching) {
-            return;
-        }
-
         const asyncFetch = async(dispatch, getState) => {
             // 第一步，请求开始阶段，可以给视图添加 loading 状态
             dispatch({ type: actions.async.REQUEST_DATA });
 
             // 第二步，发送请求
-            await sleep(1000);
+            await sleep(1500);
             fetch('./api/asyncFetchData.json')
                 .then((response) => response.json())
                 .then((json) => {
