@@ -13,7 +13,7 @@ pengyumeng
 # <font color=#0099ff>问题</font>
 
 - this.props.dispatch ？
-- 为啥 dispatch 数据就会变化 ？
+- 为啥 dispatch 后数据就会变化 ？
 
 [slide]
 
@@ -354,7 +354,7 @@ componentDidMount() {
 }
 ```
 
-[例子 react 中使用 redux](http://0.0.0.0:9999/reduxcombinereducer.html)
+[例子 react 中使用 redux](http://0.0.0.0:9999/reactreduxorigin.html)
 
 [slide]
 
@@ -378,6 +378,8 @@ componentDidMount() {
 
 ``` JavaScript
 import { Provider } from 'react-redux';  // 引入 react-redux
+
+const store = createStore(reducer);
 
 ……
 render(
@@ -477,7 +479,18 @@ export default class Provider extends Component {
 export class myComponent extends Component {
     ...
     static contextTypes = {
-        store: PropTypes.object
+        store: PropTypes.object,
+    };
+    
+    componentDidMount() {
+        const store = this.context.store;
+        store.subscribe(() => {
+            const newState = store.getState();
+            this.setState({
+                number: newState.changeNumber.number,
+                showAlert: newState.toggleAlert.showAlert,
+            });
+        });
     }
     ...
 }
@@ -654,12 +667,12 @@ export const connect = (mapStateToProps) => (WrappedComponent) => {
 
 ``` JavaScript
 console.log('current state: ', store.getState());
-console.log('dispatching', action);
+console.log('actions: ', action);
 store.dispatch(action);
 console.log('next state', store.getState());
 ```
 
-- 我们需要封装打印 log 的代码，否则让程序员在每个 dispatch 的地方写 log 是不可接受的
+- 让程序员在每个 dispatch 的地方写 log 是不可接受的，我们需要封装打印 log 的代码
 
 [slide]
 
@@ -697,18 +710,21 @@ store.dispatch = (action) => {
 - redux 提供 applyMiddleware 方法，允许将所有中间件作为参数传递进去，我们来自己实现这个方法
 
 ``` JavaScript
-const applyMiddlewarePlus = (...middlewares) => (createStore) => (reducer) => {
-    const store = createStore(reducer);
-
-    let dispatch = store.dispatch;
-    middlewares.forEach((middleware) => {
-        dispatch = middleware(store)(dispatch);
-    });
-
-    return {
-        ...store,
-        dispatch,
-    };
+const applyMiddlewarePlus = (...middlewares) => {
+    return (createStore) => (reducer) => {
+       const store = createStore(reducer);
+        
+        // 实现链式调用
+       let dispatch = store.dispatch;
+       middlewares.forEach((middleware) => {
+           dispatch = middleware(store)(dispatch);
+       });
+   
+       return {
+           ...store,
+           dispatch,
+       };
+   };
 };
 ```
 
@@ -740,16 +756,20 @@ const createStore = (reducer, enhancer) => {
 
 ``` JavaScript
 // 只打印出 action
-const loggerAction = (store) => (dispatch) => (action) => {
-    console.log('action: ', action);
-    dispatch(action);
+const loggerAction = (store) => (dispatch) => {
+    return (action) => {
+        console.log('actions: ', action);
+        dispatch(action);
+    };
 };
 
 // 只打印出更新前后的 state
-const loggerState = (store) => (dispatch) => (action) => {
-    console.log('current state: ', store.getState());
-    dispatch(action);
-    console.log('next state', store.getState());
+const loggerState = (store) => (dispatch) => {
+    return (action) => {
+        console.log('current state: ', store.getState());
+        dispatch(action);
+        console.log('next state', store.getState());
+    };
 };
 ```
 

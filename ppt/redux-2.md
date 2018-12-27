@@ -71,12 +71,14 @@ pengyumeng
 - 常规的 action 返回一个 plain object ，但 redux-thunk 允许你的 action 返回一个 function
 
 ``` JavaScript
-const thunk = (store) => (dispatch) => (action) => {
-    if (typeof action === 'function') {
-        return action(store.dispatch, store.getState);
-    }
-    return dispatch(action);
-};
+const thunk = (store) => (dispatch) => {
+    return (action) => {
+        if (typeof action === 'function') {
+           return action(store.dispatch, store.getState);
+        }
+        return dispatch(action);
+    };
+}
 ```
 
 [slide]

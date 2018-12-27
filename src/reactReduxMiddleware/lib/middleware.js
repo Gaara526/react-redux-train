@@ -4,16 +4,20 @@
  */
 
 // 只打印出 actions
-const loggerAction = (store) => (dispatch) => (action) => {
-    console.log('actions: ', action);
-    dispatch(action);
+const loggerAction = (store) => (dispatch) => {
+    return (action) => {
+        console.log('actions: ', action);
+        dispatch(action);
+    };
 };
 
 // 只打印出更新前后的 state
-const loggerState = (store) => (dispatch) => (action) => {
-    console.log('current state: ', store.getState());
-    dispatch(action);
-    console.log('next state', store.getState());
+const loggerState = (store) => (dispatch) => {
+    return (action) => {
+        console.log('current state: ', store.getState());
+        dispatch(action);
+        console.log('next state', store.getState());
+    };
 };
 
 export {
