@@ -14,20 +14,20 @@ import Demo from '../container';
 
 const store = createStore(reducer);
 
-// const preDispatch = store.dispatch;
-//
-// store.dispatch = (actions) => {
-//     console.log('actions: ', actions);
-//     preDispatch(actions);
-// };
-//
-// const tempDispatch = store.dispatch;
-//
-// store.dispatch = (actions) => {
-//     console.log('current state: ', store.getState());
-//     tempDispatch(actions);
-//     console.log('next state: ', store.getState());
-// };
+const preDispatch = store.dispatch;
+
+store.dispatch = (actions) => {
+    console.log('actions: ', actions);
+    preDispatch(actions);
+};
+
+const tempDispatch = store.dispatch;
+
+store.dispatch = (actions) => {
+    console.log('current state: ', store.getState());
+    tempDispatch(actions);
+    console.log('next state: ', store.getState());
+};
 
 render(
     <AppContainer>
