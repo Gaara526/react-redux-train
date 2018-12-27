@@ -17,9 +17,15 @@ const store = createStore(reducer);
 // const preDispatch = store.dispatch;
 //
 // store.dispatch = (actions) => {
-//     console.log('current state: ', store.getState());
 //     console.log('actions: ', actions);
 //     preDispatch(actions);
+// };
+//
+// const tempDispatch = store.dispatch;
+//
+// store.dispatch = (actions) => {
+//     console.log('current state: ', store.getState());
+//     tempDispatch(actions);
 //     console.log('next state: ', store.getState());
 // };
 
