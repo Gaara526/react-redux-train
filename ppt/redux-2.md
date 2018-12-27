@@ -142,7 +142,7 @@ function* rootSaga() {
     while (true) {
         yield take(actions.async.REQUEST_DATA);
 
-        yield delay(1000);
+        yield call(delay, 1500);
         const payload = yield call(() => {
            return fetch('./api/asyncFetchData.json')
                .then((response) => response.json())
@@ -242,7 +242,7 @@ $btn.addEventListener('click', () => {
 
 [slide]
 
-# <font color=#0099ff>redux thunk 和 redux-saga 比较</font>
+# <font color=#0099ff>redux-thunk 和 redux-saga 比较</font>
 
 - redux-thunk
 ![reduxsaga1](../img/reduxsaga1.png)
@@ -278,7 +278,7 @@ $btn.addEventListener('click', () => {
 
 - fork 意为分叉，一般在项目中用来创建多个并行 saga 子任务；
 
-- 调用 fork 方法返回的是一个子任务，子任务作为参数传给 cancel 方法被取消；
+- 调用 fork 方法返回的是一个子任务，子任务可以作为参数传给 cancel 方法被取消；
 
 - fork 实现的底层原理如下：
 
@@ -330,7 +330,7 @@ if (effect.type === 'CANCEL') {
 - effect 包含了一些给 Generator 执行器内部解释执行的信息；
 
 ``` JavaScript
-// 例如调用 call 返回的 一个 effect
+// 例如调用 call 返回的一个 effect
 {
     type: 'CALL',
     fn: Ajax.get,
@@ -343,19 +343,7 @@ if (effect.type === 'CANCEL') {
 
 [slide]
 
-# <font color=#0099ff>redux-saga 常用生成 effect 的 API</font>
-
-- take ：监听 dispatch 的 action
-
-- put ：替代 dispatch 方法，通知 redux 执行 reducer 函数
-
-- call ：阻塞式调用
-
-- fork ：无阻塞调用
-
-- select ：获取 store 中存储的 state
-
-- cancel ：取消某个进程
+![reduxsaga3](../img/reduxsaga3.jpg)
 
 [slide]
 
@@ -393,6 +381,22 @@ iterator.next().value
 
 [slide]
 
+# <font color=#0099ff>redux-saga 常用生成 effect 的 API</font>
+
+- take ：监听 dispatch 的 action
+
+- put ：替代 dispatch 方法，通知 redux 执行 reducer 函数
+
+- call ：阻塞式调用
+
+- fork ：无阻塞调用
+
+- select ：获取 store 中存储的 state
+
+- cancel ：取消某个进程
+
+[slide]
+
 # <font color=#0099ff>redux-saga 高阶 API</font>
 
 - <font color=#ff9933> takeEvery(pattern, saga, ...args) </font>：dispatch 的 action.type 匹配 pattern 时派生一个 saga 任务；
@@ -401,7 +405,7 @@ iterator.next().value
 
 - 高阶 API 具有更好地绑定监听事件的语义，帮助我们管理 saga ； 
 
-[例子 redux-saga 高阶 api](http://0.0.0.0:9999/reactreduxsaga.html)
+[例子 redux-saga 高阶 api](http://0.0.0.0:9999/reactreduxsaga3.html)
 
 [slide]
 

@@ -3,11 +3,13 @@
  * @author pengyumeng
  */
 
-const thunk = (store) => (dispatch) => (action) => {
-    if (typeof action === 'function') {
-        return action(store.dispatch, store.getState);
-    }
-    return dispatch(action);
+const thunk = (store) => (dispatch) => {
+    return (action) => {
+        if (typeof action === 'function') {
+            action(store.dispatch, store.getState);
+        }
+        dispatch(action);
+    };
 };
 
 export {

@@ -13,7 +13,7 @@ pengyumeng
 # <font color=#0099ff>问题</font>
 
 - this.props.dispatch ？
-- 为啥 dispatch 后数据就会变化 ？
+- 为什么 dispatch 后数据就会变化 ？
 
 [slide]
 
@@ -360,7 +360,8 @@ componentDidMount() {
 
 # <font color=#0099ff>单独使用 redux 缺点</font>
 
-- 使用 store 中数据的地方都需要单独注册更新后的事件，不利于工程化
+- store 是个顶层概念，如果项目里有多个 container ，store 数据如何拿到？
+- 使用 store 中数据的地方都需要单独注册更新后的事件，不利于工程化，而且注册后的事件在 state 更新后一定会执行，那么会有很多没必要的更新
 
 [slide]
 
@@ -653,14 +654,6 @@ export const connect = (mapStateToProps) => (WrappedComponent) => {
 
 [slide]
 
-# <font color=#0099ff>例子</font>
-
-- redux-logger 中间件
-
-![redux-logger](../img/redux-logger.jpeg)
-
-[slide]
-
 # <font color=#0099ff>需求：打印 log</font>
 
 - 需求：自动打印出 action 对象和更新前后的 state，便于调试和追踪数据变化流
@@ -673,6 +666,12 @@ console.log('next state', store.getState());
 ```
 
 - 让程序员在每个 dispatch 的地方写 log 是不可接受的，我们需要封装打印 log 的代码
+
+[slide]
+
+# <font color=#0099ff>例子</font>
+
+![redux-logger](../img/redux-logger.jpeg)
 
 [slide]
 
@@ -710,7 +709,7 @@ store.dispatch = (action) => {
 - redux 提供 applyMiddleware 方法，允许将所有中间件作为参数传递进去，我们来自己实现这个方法
 
 ``` JavaScript
-const applyMiddlewarePlus = (...middlewares) => {
+const applyMiddleware = (...middlewares) => {
     return (createStore) => (reducer) => {
        const store = createStore(reducer);
         
